@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: devplux_lms_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: devplux
+      POSTGRES_PASSWORD: devplux_password
+      POSTGRES_DB: devplux_lms
+
+    ports:
+      - "55432:5432"
+
+    volumes:
+      - devplux_lms_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  devplux_lms_postgres_data:
