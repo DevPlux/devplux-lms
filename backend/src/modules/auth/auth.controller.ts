@@ -6,27 +6,26 @@ import {
   Req,
   Res,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
-import type { Response } from 'express';
 
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ConfigService } from '@nestjs/config';
+import type { Response } from 'express';
 
 import type { TenantRequest } from '../../common/middleware/tenant-resolver.middleware';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import type { JwtPayload } from '../../common/guards/jwt-auth.guard';
-
-import { Roles } from '../../common/decorators/roles.decorator';
-import { RolesGuard } from '../../common/guards/roles.guard';
+import type { AccessTokenPayload } from './types/auth.types';
 import { InstituteRole } from '../../generated/prisma/enums';
-import { TenantMembershipGuard } from '../../common/guards/tenant-membership.guard';
+import { Protected } from '../../common/decorators/protected.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('login')
   async login(
@@ -36,13 +35,11 @@ export class AuthController {
   ) {
     const result = await this.authService.login(loginDto, request);
 
-    response.cookie('refresh_token', result.refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/api/v1/auth',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    response.cookie(
+      this.getRefreshCookieName(),
+      result.refreshToken,
+      this.getRefreshCookieOptions(),
+    );
 
     return {
       message: result.message,
@@ -54,9 +51,8 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard, TenantMembershipGuard, RolesGuard)
-  @Roles(InstituteRole.INSTITUTE_ADMIN)
-  me(@CurrentUser() user: JwtPayload) {
+  @Protected(InstituteRole.INSTITUTE_ADMIN)
+  me(@CurrentUser() user: AccessTokenPayload) {
     return {
       user,
     };
@@ -67,7 +63,7 @@ export class AuthController {
     @Req() request: TenantRequest,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refreshToken = request.cookies?.refresh_token;
+    const refreshToken = request.cookies?.[this.getRefreshCookieName()];
 
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token cookie missing');
@@ -75,13 +71,11 @@ export class AuthController {
 
     const result = await this.authService.refresh(refreshToken);
 
-    response.cookie('refresh_token', result.refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/api/v1/auth',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    response.cookie(
+      this.getRefreshCookieName(),
+      result.refreshToken,
+      this.getRefreshCookieOptions(),
+    );
 
     return {
       accessToken: result.accessToken,
@@ -93,21 +87,39 @@ export class AuthController {
     @Req() request: TenantRequest,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const refreshToken = request.cookies?.refresh_token;
+    const refreshToken = request.cookies?.[this.getRefreshCookieName()];
 
     if (refreshToken) {
       await this.authService.logout(refreshToken);
     }
 
-    response.clearCookie('refresh_token', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/api/v1/auth',
-    });
+    response.clearCookie(
+      this.getRefreshCookieName(),
+      this.getRefreshCookieOptions(),
+    );
 
     return {
       message: 'Logged out successfully',
     };
+  }
+
+  private getRefreshCookieOptions() {
+    return {
+      httpOnly: true,
+      secure: this.configService.get<string>('COOKIE_SECURE') === 'true',
+      sameSite: (this.configService.get<string>('COOKIE_SAME_SITE') ??
+        'lax') as 'lax' | 'strict' | 'none',
+      path: '/api/v1/auth',
+      maxAge: Number(
+        this.configService.get<string>('COOKIE_REFRESH_MAX_AGE_MS') ??
+          604800000,
+      ),
+    };
+  }
+
+  private getRefreshCookieName(): string {
+    return (
+      this.configService.get<string>('COOKIE_REFRESH_NAME') ?? 'refresh_token'
+    );
   }
 }
