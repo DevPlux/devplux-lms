@@ -32,7 +32,7 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Authenticated user not found');
     }
 
-    const hasRole = requiredRoles.includes(user.role as InstituteRole);
+    const hasRole = requiredRoles.includes(user.role);
 
     if (!hasRole) {
       throw new ForbiddenException(
