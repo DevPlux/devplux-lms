@@ -19,8 +19,25 @@ model Tenant {
   slug   String       @unique
   status TenantStatus @default(ACTIVE)
 
+  domains TenantDomain[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model TenantDomain {
+  id         String    @id @default(uuid())
+  hostname   String    @unique
+  isPrimary  Boolean   @default(false)
+  verifiedAt DateTime?
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
 }
 
 enum TenantStatus {
