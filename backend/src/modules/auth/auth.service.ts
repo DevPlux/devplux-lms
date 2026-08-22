@@ -8,6 +8,12 @@ import type { AuthSession } from '../../generated/prisma/client';
 import type { TenantRequest } from '../../common/middleware/tenant-resolver.middleware';
 import { LoginDto } from './dto/login.dto';
 
+import type {
+  LoginResult,
+  LogoutResult,
+  RefreshResult,
+} from './types/auth.types';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -16,7 +22,10 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async login(loginDto: LoginDto, request: TenantRequest) {
+  async login(
+    loginDto: LoginDto,
+    request: TenantRequest,
+  ): Promise<LoginResult> {
     const tenant = request.tenant;
 
     if (!tenant) {
@@ -116,7 +125,7 @@ export class AuthService {
     };
   }
 
-  async refresh(refreshToken: string) {
+  async refresh(refreshToken: string): Promise<RefreshResult> {
     let payload: {
       sub: string;
       tenantId: string;
@@ -238,7 +247,7 @@ export class AuthService {
     };
   }
 
-  async logout(refreshToken: string) {
+  async logout(refreshToken: string): Promise<LogoutResult> {
     let payload: {
       sub: string;
       tenantId: string;
