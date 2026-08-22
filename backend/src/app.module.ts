@@ -17,6 +17,7 @@ import { TenantResolverMiddleware } from './common/middleware/tenant-resolver.mi
 import { UsersModule } from './modules/users/users.module';
 import { MembershipsModule } from './modules/memberships/memberships.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { InstituteModule } from './modules/institute/institute.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuthModule } from './modules/auth/auth.module';
     UsersModule,
     MembershipsModule,
     AuthModule,
+    InstituteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -48,6 +50,14 @@ export class AppModule implements NestModule {
       {
         path: 'auth/me',
         method: RequestMethod.GET,
+      },
+      {
+        path: 'institute/profile',
+        method: RequestMethod.GET,
+      },
+      {
+        path: 'institute/profile',
+        method: RequestMethod.PATCH,
       },
     );
   }
