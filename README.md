@@ -1,5 +1,9 @@
 # DevPlux LMS
 
+<p align="center">
+  <img src="./cover/DevPlux%20LMS.png" alt="DevPlux LMS" width="100%">
+</p>
+
 A modern, secure, multi-tenant Learning Management System developed by **DevPlux Software Solutions**.
 
 DevPlux LMS is designed for educational institutes to centrally manage students, teachers, parents, courses, batches, classes, attendance, learning materials, assessments, academic performance, notifications, reporting and other academic operations.
