@@ -19,11 +19,12 @@ model Tenant {
   slug   String       @unique
   status TenantStatus @default(ACTIVE)
 
-  domains TenantDomain[]
+  domains     TenantDomain[]
+  memberships Membership[]
+  sessions    AuthSession[]
 
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  Membership Membership[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TenantDomain {
@@ -67,6 +68,7 @@ model User {
   isActive Boolean @default(true)
 
   memberships Membership[]
+  sessions    AuthSession[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -89,4 +91,25 @@ model Membership {
   @@unique([userId, tenantId])
   @@index([userId])
   @@index([tenantId])
+}
+
+model AuthSession {
+  id               String    @id @default(uuid())
+  userId           String
+  tenantId         String
+  refreshTokenHash String
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  userAgent        String?
+  ipAddress        String?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([expiresAt])
 }
