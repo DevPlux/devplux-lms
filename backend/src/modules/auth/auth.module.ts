@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { TenantMembershipGuard } from '../../common/guards/tenant-membership.guard';
+import { TenantContextGuard } from '../../common/guards/tenant-context.guard';
 
 @Module({
   imports: [
@@ -26,7 +27,13 @@ import { TenantMembershipGuard } from '../../common/guards/tenant-membership.gua
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard, RolesGuard, TenantMembershipGuard],
+  providers: [
+    AuthService,
+    JwtAuthGuard,
+    RolesGuard,
+    TenantMembershipGuard,
+    TenantContextGuard,
+  ],
   exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
