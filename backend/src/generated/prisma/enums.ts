@@ -16,3 +16,15 @@ export const TenantStatus = {
 } as const
 
 export type TenantStatus = (typeof TenantStatus)[keyof typeof TenantStatus]
+
+
+export const InstituteRole = {
+  INSTITUTE_ADMIN: 'INSTITUTE_ADMIN',
+  TEACHER: 'TEACHER',
+  STUDENT: 'STUDENT',
+  PARENT: 'PARENT',
+  ACADEMIC_MANAGER: 'ACADEMIC_MANAGER',
+  ACCOUNTANT: 'ACCOUNTANT'
+} as const
+
+export type InstituteRole = (typeof InstituteRole)[keyof typeof InstituteRole]

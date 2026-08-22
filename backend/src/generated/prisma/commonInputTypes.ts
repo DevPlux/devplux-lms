@@ -132,6 +132,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumInstituteRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.InstituteRole | Prisma.EnumInstituteRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInstituteRoleFilter<$PrismaModel> | $Enums.InstituteRole
+}
+
+export type EnumInstituteRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InstituteRole | Prisma.EnumInstituteRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInstituteRoleWithAggregatesFilter<$PrismaModel> | $Enums.InstituteRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInstituteRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInstituteRoleFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -263,6 +280,23 @@ export type NestedIntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
+}
+
+export type NestedEnumInstituteRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.InstituteRole | Prisma.EnumInstituteRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInstituteRoleFilter<$PrismaModel> | $Enums.InstituteRole
+}
+
+export type NestedEnumInstituteRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InstituteRole | Prisma.EnumInstituteRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InstituteRole[] | Prisma.ListEnumInstituteRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInstituteRoleWithAggregatesFilter<$PrismaModel> | $Enums.InstituteRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInstituteRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInstituteRoleFilter<$PrismaModel>
 }
 
 

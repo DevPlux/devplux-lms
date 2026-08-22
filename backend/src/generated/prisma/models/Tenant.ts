@@ -191,6 +191,7 @@ export type TenantWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   domains?: Prisma.TenantDomainListRelationFilter
+  Membership?: Prisma.MembershipListRelationFilter
 }
 
 export type TenantOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type TenantOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   domains?: Prisma.TenantDomainOrderByRelationAggregateInput
+  Membership?: Prisma.MembershipOrderByRelationAggregateInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -214,6 +216,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   domains?: Prisma.TenantDomainListRelationFilter
+  Membership?: Prisma.MembershipListRelationFilter
 }, "id" | "slug">
 
 export type TenantOrderByWithAggregationInput = {
@@ -248,6 +251,7 @@ export type TenantCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   domains?: Prisma.TenantDomainCreateNestedManyWithoutTenantInput
+  Membership?: Prisma.MembershipCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
@@ -258,6 +262,7 @@ export type TenantUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   domains?: Prisma.TenantDomainUncheckedCreateNestedManyWithoutTenantInput
+  Membership?: Prisma.MembershipUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
@@ -268,6 +273,7 @@ export type TenantUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   domains?: Prisma.TenantDomainUpdateManyWithoutTenantNestedInput
+  Membership?: Prisma.MembershipUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
@@ -278,6 +284,7 @@ export type TenantUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   domains?: Prisma.TenantDomainUncheckedUpdateManyWithoutTenantNestedInput
+  Membership?: Prisma.MembershipUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
@@ -365,6 +372,20 @@ export type TenantUpdateOneRequiredWithoutDomainsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutDomainsInput, Prisma.TenantUpdateWithoutDomainsInput>, Prisma.TenantUncheckedUpdateWithoutDomainsInput>
 }
 
+export type TenantCreateNestedOneWithoutMembershipInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutMembershipInput, Prisma.TenantUncheckedCreateWithoutMembershipInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutMembershipInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutMembershipNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutMembershipInput, Prisma.TenantUncheckedCreateWithoutMembershipInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutMembershipInput
+  upsert?: Prisma.TenantUpsertWithoutMembershipInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutMembershipInput, Prisma.TenantUpdateWithoutMembershipInput>, Prisma.TenantUncheckedUpdateWithoutMembershipInput>
+}
+
 export type TenantCreateWithoutDomainsInput = {
   id?: string
   name: string
@@ -372,6 +393,7 @@ export type TenantCreateWithoutDomainsInput = {
   status?: $Enums.TenantStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  Membership?: Prisma.MembershipCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutDomainsInput = {
@@ -381,6 +403,7 @@ export type TenantUncheckedCreateWithoutDomainsInput = {
   status?: $Enums.TenantStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  Membership?: Prisma.MembershipUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutDomainsInput = {
@@ -406,6 +429,7 @@ export type TenantUpdateWithoutDomainsInput = {
   status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Membership?: Prisma.MembershipUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutDomainsInput = {
@@ -415,6 +439,63 @@ export type TenantUncheckedUpdateWithoutDomainsInput = {
   status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Membership?: Prisma.MembershipUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutMembershipInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.TenantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  domains?: Prisma.TenantDomainCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutMembershipInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.TenantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  domains?: Prisma.TenantDomainUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutMembershipInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutMembershipInput, Prisma.TenantUncheckedCreateWithoutMembershipInput>
+}
+
+export type TenantUpsertWithoutMembershipInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutMembershipInput, Prisma.TenantUncheckedUpdateWithoutMembershipInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutMembershipInput, Prisma.TenantUncheckedCreateWithoutMembershipInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutMembershipInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutMembershipInput, Prisma.TenantUncheckedUpdateWithoutMembershipInput>
+}
+
+export type TenantUpdateWithoutMembershipInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  domains?: Prisma.TenantDomainUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutMembershipInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  domains?: Prisma.TenantDomainUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 
@@ -424,10 +505,12 @@ export type TenantUncheckedUpdateWithoutDomainsInput = {
 
 export type TenantCountOutputType = {
   domains: number
+  Membership: number
 }
 
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   domains?: boolean | TenantCountOutputTypeCountDomainsArgs
+  Membership?: boolean | TenantCountOutputTypeCountMembershipArgs
 }
 
 /**
@@ -447,6 +530,13 @@ export type TenantCountOutputTypeCountDomainsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.TenantDomainWhereInput
 }
 
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountMembershipArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MembershipWhereInput
+}
+
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -456,6 +546,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdAt?: boolean
   updatedAt?: boolean
   domains?: boolean | Prisma.Tenant$domainsArgs<ExtArgs>
+  Membership?: boolean | Prisma.Tenant$MembershipArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
@@ -489,6 +580,7 @@ export type TenantSelectScalar = {
 export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   domains?: boolean | Prisma.Tenant$domainsArgs<ExtArgs>
+  Membership?: boolean | Prisma.Tenant$MembershipArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TenantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -498,6 +590,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Tenant"
   objects: {
     domains: Prisma.$TenantDomainPayload<ExtArgs>[]
+    Membership: Prisma.$MembershipPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -901,6 +994,7 @@ readonly fields: TenantFieldRefs;
 export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   domains<T extends Prisma.Tenant$domainsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$domainsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TenantDomainPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  Membership<T extends Prisma.Tenant$MembershipArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$MembershipArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1350,6 +1444,30 @@ export type Tenant$domainsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.TenantDomainScalarFieldEnum | Prisma.TenantDomainScalarFieldEnum[]
+}
+
+/**
+ * Tenant.Membership
+ */
+export type Tenant$MembershipArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Membership
+   */
+  select?: Prisma.MembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Membership
+   */
+  omit?: Prisma.MembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MembershipInclude<ExtArgs> | null
+  where?: Prisma.MembershipWhereInput
+  orderBy?: Prisma.MembershipOrderByWithRelationInput | Prisma.MembershipOrderByWithRelationInput[]
+  cursor?: Prisma.MembershipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MembershipScalarFieldEnum | Prisma.MembershipScalarFieldEnum[]
 }
 
 /**

@@ -49,3 +49,13 @@ export type Tenant = Prisma.TenantModel
  * 
  */
 export type TenantDomain = Prisma.TenantDomainModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model Membership
+ * 
+ */
+export type Membership = Prisma.MembershipModel
