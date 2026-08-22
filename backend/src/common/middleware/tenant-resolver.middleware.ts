@@ -1,5 +1,6 @@
 import { Injectable, NestMiddleware, NotFoundException } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+
+import type { Request, Response, NextFunction } from 'express';
 
 import { PrismaService } from '../../database/prisma/prisma.service';
 
