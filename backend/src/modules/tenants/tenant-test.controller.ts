@@ -1,14 +1,14 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
-import type { TenantRequest } from '../../common/middleware/tenant-resolver.middleware';
+import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 
 @Controller('tenant-test')
 export class TenantTestController {
   @Get()
-  getTenant(@Req() req: TenantRequest) {
+  getTenant(@CurrentTenant() tenant: unknown) {
     return {
       message: 'Tenant resolved successfully',
-      tenant: req.tenant,
+      tenant,
     };
   }
 }
