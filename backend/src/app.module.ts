@@ -36,9 +36,15 @@ import { AuthModule } from './modules/auth/auth.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TenantResolverMiddleware).forRoutes({
-      path: 'tenant-test',
-      method: RequestMethod.GET,
-    });
+    consumer.apply(TenantResolverMiddleware).forRoutes(
+      {
+        path: 'tenant-test',
+        method: RequestMethod.GET,
+      },
+      {
+        path: 'auth/login',
+        method: RequestMethod.POST,
+      },
+    );
   }
 }
