@@ -42,3 +42,8 @@ export type Membership = Prisma.MembershipModel
  * 
  */
 export type AuthSession = Prisma.AuthSessionModel
+/**
+ * Model TenantProfile
+ * 
+ */
+export type TenantProfile = Prisma.TenantProfileModel

@@ -55,7 +55,8 @@ export const ModelName = {
   TenantDomain: 'TenantDomain',
   User: 'User',
   Membership: 'Membership',
-  AuthSession: 'AuthSession'
+  AuthSession: 'AuthSession',
+  TenantProfile: 'TenantProfile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -139,6 +140,23 @@ export const AuthSessionScalarFieldEnum = {
 } as const
 
 export type AuthSessionScalarFieldEnum = (typeof AuthSessionScalarFieldEnum)[keyof typeof AuthSessionScalarFieldEnum]
+
+
+export const TenantProfileScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  website: 'website',
+  country: 'country',
+  timezone: 'timezone',
+  logoUrl: 'logoUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantProfileScalarFieldEnum = (typeof TenantProfileScalarFieldEnum)[keyof typeof TenantProfileScalarFieldEnum]
 
 
 export const SortOrder = {

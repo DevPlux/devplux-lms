@@ -22,6 +22,7 @@ model Tenant {
   domains     TenantDomain[]
   memberships Membership[]
   sessions    AuthSession[]
+  profile     TenantProfile?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -112,4 +113,22 @@ model AuthSession {
   @@index([userId])
   @@index([tenantId])
   @@index([expiresAt])
+}
+
+model TenantProfile {
+  id       String @id @default(uuid())
+  tenantId String @unique
+
+  email    String?
+  phone    String?
+  address  String?
+  website  String?
+  country  String?
+  timezone String?
+  logoUrl  String?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

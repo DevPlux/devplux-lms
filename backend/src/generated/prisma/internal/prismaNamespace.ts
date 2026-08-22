@@ -401,7 +401,8 @@ export const ModelName = {
   TenantDomain: 'TenantDomain',
   User: 'User',
   Membership: 'Membership',
-  AuthSession: 'AuthSession'
+  AuthSession: 'AuthSession',
+  TenantProfile: 'TenantProfile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "tenantDomain" | "user" | "membership" | "authSession"
+    modelProps: "tenant" | "tenantDomain" | "user" | "membership" | "authSession" | "tenantProfile"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -791,6 +792,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TenantProfile: {
+      payload: Prisma.$TenantProfilePayload<ExtArgs>
+      fields: Prisma.TenantProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TenantProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TenantProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.TenantProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TenantProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>
+        }
+        findMany: {
+          args: Prisma.TenantProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>[]
+        }
+        create: {
+          args: Prisma.TenantProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>
+        }
+        createMany: {
+          args: Prisma.TenantProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TenantProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.TenantProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>
+        }
+        update: {
+          args: Prisma.TenantProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.TenantProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TenantProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TenantProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.TenantProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.TenantProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTenantProfile>
+        }
+        groupBy: {
+          args: Prisma.TenantProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TenantProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantProfileCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -895,6 +970,23 @@ export const AuthSessionScalarFieldEnum = {
 } as const
 
 export type AuthSessionScalarFieldEnum = (typeof AuthSessionScalarFieldEnum)[keyof typeof AuthSessionScalarFieldEnum]
+
+
+export const TenantProfileScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  website: 'website',
+  country: 'country',
+  timezone: 'timezone',
+  logoUrl: 'logoUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantProfileScalarFieldEnum = (typeof TenantProfileScalarFieldEnum)[keyof typeof TenantProfileScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1159,6 +1251,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   membership?: Prisma.MembershipOmit
   authSession?: Prisma.AuthSessionOmit
+  tenantProfile?: Prisma.TenantProfileOmit
 }
 
 /* Types for Logging */
