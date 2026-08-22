@@ -16,6 +16,7 @@ import { TenantDomainsModule } from './modules/tenant-domains/tenant-domains.mod
 import { TenantResolverMiddleware } from './common/middleware/tenant-resolver.middleware';
 import { UsersModule } from './modules/users/users.module';
 import { MembershipsModule } from './modules/memberships/memberships.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { MembershipsModule } from './modules/memberships/memberships.module';
     TenantDomainsModule,
     UsersModule,
     MembershipsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
