@@ -7,6 +7,8 @@ import type { StringValue } from 'ms';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { TenantMembershipGuard } from '../../common/guards/tenant-membership.guard';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard],
+  providers: [AuthService, JwtAuthGuard, RolesGuard, TenantMembershipGuard],
   exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
