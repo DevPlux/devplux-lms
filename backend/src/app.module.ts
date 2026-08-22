@@ -45,6 +45,10 @@ export class AppModule implements NestModule {
         path: 'auth/login',
         method: RequestMethod.POST,
       },
+      {
+        path: 'auth/me',
+        method: RequestMethod.GET,
+      },
     );
   }
 }
