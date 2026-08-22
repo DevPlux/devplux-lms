@@ -19,6 +19,11 @@ import { LoginDto } from './dto/login.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { JwtPayload } from '../../common/guards/jwt-auth.guard';
 
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { InstituteRole } from '../../generated/prisma/enums';
+import { TenantMembershipGuard } from '../../common/guards/tenant-membership.guard';
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -49,7 +54,8 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, TenantMembershipGuard, RolesGuard)
+  @Roles(InstituteRole.INSTITUTE_ADMIN)
   me(@CurrentUser() user: JwtPayload) {
     return {
       user,
