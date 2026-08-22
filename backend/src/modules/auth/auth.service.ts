@@ -189,14 +189,111 @@ export class AuthService {
       throw new UnauthorizedException('User account is inactive');
     }
 
-    const accessToken = await this.jwtService.signAsync({
+    const newAccessToken = await this.jwtService.signAsync({
       sub: user.id,
       tenantId: payload.tenantId,
       role: membership.role,
     });
 
+    const newRefreshToken = await this.jwtService.signAsync(
+      {
+        sub: user.id,
+        tenantId: payload.tenantId,
+        role: membership.role,
+      },
+      {
+        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.getOrThrow<string>(
+          'JWT_REFRESH_EXPIRES_IN',
+        ) as any,
+      },
+    );
+
+    const newRefreshTokenHash = await bcrypt.hash(newRefreshToken, 12);
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.prisma.authSession.update({
+      where: {
+        id: matchedSession.id,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    await this.prisma.authSession.create({
+      data: {
+        userId: user.id,
+        tenantId: payload.tenantId,
+        refreshTokenHash: newRefreshTokenHash,
+        expiresAt,
+      },
+    });
+
     return {
-      accessToken,
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
+  }
+
+  async logout(refreshToken: string) {
+    let payload: {
+      sub: string;
+      tenantId: string;
+      role: string;
+    };
+
+    try {
+      payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    const sessions = await this.prisma.authSession.findMany({
+      where: {
+        userId: payload.sub,
+        tenantId: payload.tenantId,
+        revokedAt: null,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    let matchedSession: AuthSession | null = null;
+
+    for (const session of sessions) {
+      const matches = await bcrypt.compare(
+        refreshToken,
+        session.refreshTokenHash,
+      );
+
+      if (matches) {
+        matchedSession = session;
+        break;
+      }
+    }
+
+    if (matchedSession) {
+      await this.prisma.authSession.update({
+        where: {
+          id: matchedSession.id,
+        },
+        data: {
+          revokedAt: new Date(),
+        },
+      });
+    }
+
+    return {
+      message: 'Logged out successfully',
     };
   }
 }
