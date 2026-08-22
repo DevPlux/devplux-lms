@@ -17,6 +17,11 @@ export class TenantsController {
     return this.tenantsService.findAll();
   }
 
+  @Get('slug/:slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.tenantsService.findBySlug(slug);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tenantsService.findOne(id);
