@@ -51,4 +51,18 @@ export class TenantsService {
 
     return tenant;
   }
+
+  async findBySlug(slug: string) {
+    const tenant = await this.prisma.tenant.findUnique({
+      where: {
+        slug,
+      },
+    });
+
+    if (!tenant) {
+      throw new NotFoundException('Tenant not found');
+    }
+
+    return tenant;
+  }
 }
