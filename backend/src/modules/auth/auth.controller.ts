@@ -57,13 +57,51 @@ export class AuthController {
   }
 
   @Post('refresh')
-  refresh(@Req() request: TenantRequest) {
+  async refresh(
+    @Req() request: TenantRequest,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     const refreshToken = request.cookies?.refresh_token;
 
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token cookie missing');
     }
 
-    return this.authService.refresh(refreshToken);
+    const result = await this.authService.refresh(refreshToken);
+
+    response.cookie('refresh_token', result.refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/api/v1/auth',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return {
+      accessToken: result.accessToken,
+    };
+  }
+
+  @Post('logout')
+  async logout(
+    @Req() request: TenantRequest,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const refreshToken = request.cookies?.refresh_token;
+
+    if (refreshToken) {
+      await this.authService.logout(refreshToken);
+    }
+
+    response.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/api/v1/auth',
+    });
+
+    return {
+      message: 'Logged out successfully',
+    };
   }
 }
