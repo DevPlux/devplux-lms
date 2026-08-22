@@ -250,7 +250,7 @@ export type MembershipCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
-  tenant: Prisma.TenantCreateNestedOneWithoutMembershipInput
+  tenant: Prisma.TenantCreateNestedOneWithoutMembershipsInput
 }
 
 export type MembershipUncheckedCreateInput = {
@@ -268,7 +268,7 @@ export type MembershipUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
-  tenant?: Prisma.TenantUpdateOneRequiredWithoutMembershipNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutMembershipsNestedInput
 }
 
 export type MembershipUncheckedUpdateInput = {
@@ -494,7 +494,7 @@ export type MembershipCreateWithoutUserInput = {
   role: $Enums.InstituteRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  tenant: Prisma.TenantCreateNestedOneWithoutMembershipInput
+  tenant: Prisma.TenantCreateNestedOneWithoutMembershipsInput
 }
 
 export type MembershipUncheckedCreateWithoutUserInput = {
@@ -576,7 +576,7 @@ export type MembershipUpdateWithoutUserInput = {
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tenant?: Prisma.TenantUpdateOneRequiredWithoutMembershipNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutMembershipsNestedInput
 }
 
 export type MembershipUncheckedUpdateWithoutUserInput = {
