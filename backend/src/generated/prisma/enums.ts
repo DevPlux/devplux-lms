@@ -28,3 +28,12 @@ export const InstituteRole = {
 } as const
 
 export type InstituteRole = (typeof InstituteRole)[keyof typeof InstituteRole]
+
+
+export const MembershipStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type MembershipStatus = (typeof MembershipStatus)[keyof typeof MembershipStatus]
