@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 import { Protected } from '../../common/decorators/protected.decorator';
@@ -8,6 +16,7 @@ import { InstituteRole } from '../../generated/prisma/enums';
 
 import { InstituteUsersService } from './institute-users.service';
 import { UpdateInstituteUserRoleDto } from './dto/update-institute-user-role.dto';
+import { UpdateInstituteUserStatusDto } from './dto/update-institute-user-status.dto';
 
 type CurrentTenantData = NonNullable<TenantRequest['tenant']>;
 
@@ -51,5 +60,28 @@ export class InstituteUsersController {
       userId,
       updateRoleDto.role,
     );
+  }
+
+  @Patch(':userId/status')
+  @Protected(InstituteRole.INSTITUTE_ADMIN)
+  updateStatus(
+    @CurrentTenant() tenant: CurrentTenantData,
+    @Param('userId') userId: string,
+    @Body() updateStatusDto: UpdateInstituteUserStatusDto,
+  ) {
+    return this.instituteUsersService.updateStatus(
+      tenant.id,
+      userId,
+      updateStatusDto.status,
+    );
+  }
+
+  @Delete(':userId')
+  @Protected(InstituteRole.INSTITUTE_ADMIN)
+  removeFromInstitute(
+    @CurrentTenant() tenant: CurrentTenantData,
+    @Param('userId') userId: string,
+  ) {
+    return this.instituteUsersService.removeFromInstitute(tenant.id, userId);
   }
 }
