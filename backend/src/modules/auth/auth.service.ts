@@ -70,6 +70,12 @@ export class AuthService {
       throw new UnauthorizedException('User does not belong to this institute');
     }
 
+    if (membership.status !== 'ACTIVE') {
+      throw new UnauthorizedException(
+        'Your membership in this institute is not active',
+      );
+    }
+
     const accessToken = await this.jwtService.signAsync({
       sub: user.id,
       tenantId: tenant.id,
@@ -185,6 +191,12 @@ export class AuthService {
     if (!membership) {
       throw new UnauthorizedException(
         'User no longer belongs to this institute',
+      );
+    }
+
+    if (membership.status !== 'ACTIVE') {
+      throw new UnauthorizedException(
+        'Your membership in this institute is not active',
       );
     }
 
