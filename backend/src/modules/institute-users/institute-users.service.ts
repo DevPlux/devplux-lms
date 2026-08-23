@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../../database/prisma/prisma.service';
 import { CreateInstituteUserDto } from './dto/create-institute-user.dto';
-import { InstituteRole } from '../../generated/prisma/enums';
+import { InstituteRole, MembershipStatus } from '../../generated/prisma/enums';
 
 @Injectable()
 export class InstituteUsersService {
@@ -165,6 +165,10 @@ export class InstituteUsersService {
       throw new NotFoundException('User not found in this institute');
     }
 
+    if (role !== InstituteRole.INSTITUTE_ADMIN) {
+      await this.ensureNotLastActiveAdmin(tenantId, userId);
+    }
+
     return this.prisma.membership.update({
       where: {
         userId_tenantId: {
@@ -187,5 +191,128 @@ export class InstituteUsersService {
         },
       },
     });
+  }
+
+  async updateStatus(
+    tenantId: string,
+    userId: string,
+    status: MembershipStatus,
+  ) {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('User not found in this institute');
+    }
+
+    if (status !== MembershipStatus.ACTIVE) {
+      await this.ensureNotLastActiveAdmin(tenantId, userId);
+    }
+
+    return this.prisma.membership.update({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+      data: {
+        status,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            isActive: true,
+          },
+        },
+      },
+    });
+  }
+
+  async removeFromInstitute(tenantId: string, userId: string) {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('User not found in this institute');
+    }
+
+    await this.ensureNotLastActiveAdmin(tenantId, userId);
+
+    await this.prisma.authSession.updateMany({
+      where: {
+        userId,
+        tenantId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    await this.prisma.membership.delete({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+    });
+
+    return {
+      message: 'User removed from institute successfully',
+    };
+  }
+
+  private async ensureNotLastActiveAdmin(tenantId: string, userId: string) {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('User not found in this institute');
+    }
+
+    if (
+      membership.role !== InstituteRole.INSTITUTE_ADMIN ||
+      membership.status !== MembershipStatus.ACTIVE
+    ) {
+      return;
+    }
+
+    const activeAdminCount = await this.prisma.membership.count({
+      where: {
+        tenantId,
+        role: InstituteRole.INSTITUTE_ADMIN,
+        status: MembershipStatus.ACTIVE,
+      },
+    });
+
+    if (activeAdminCount <= 1) {
+      throw new ConflictException(
+        'Cannot remove or suspend the last active institute admin',
+      );
+    }
   }
 }
