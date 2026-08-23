@@ -77,6 +77,14 @@ export class AppModule implements NestModule {
         path: 'institute-users/:userId/role',
         method: RequestMethod.PATCH,
       },
+      {
+        path: 'institute-users/:userId/status',
+        method: RequestMethod.PATCH,
+      },
+      {
+        path: 'institute-users/:userId',
+        method: RequestMethod.DELETE,
+      },
     );
   }
 }
