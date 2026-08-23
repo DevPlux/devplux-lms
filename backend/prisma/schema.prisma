@@ -81,7 +81,8 @@ model Membership {
   userId   String
   tenantId String
 
-  role InstituteRole
+  role   InstituteRole
+  status MembershipStatus @default(ACTIVE)
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -92,6 +93,12 @@ model Membership {
   @@unique([userId, tenantId])
   @@index([userId])
   @@index([tenantId])
+}
+
+enum MembershipStatus {
+  ACTIVE
+  SUSPENDED
+  INACTIVE
 }
 
 model AuthSession {
