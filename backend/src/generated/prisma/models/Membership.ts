@@ -29,6 +29,7 @@ export type MembershipMinAggregateOutputType = {
   userId: string | null
   tenantId: string | null
   role: $Enums.InstituteRole | null
+  status: $Enums.MembershipStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +39,7 @@ export type MembershipMaxAggregateOutputType = {
   userId: string | null
   tenantId: string | null
   role: $Enums.InstituteRole | null
+  status: $Enums.MembershipStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +49,7 @@ export type MembershipCountAggregateOutputType = {
   userId: number
   tenantId: number
   role: number
+  status: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -58,6 +61,7 @@ export type MembershipMinAggregateInputType = {
   userId?: true
   tenantId?: true
   role?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +71,7 @@ export type MembershipMaxAggregateInputType = {
   userId?: true
   tenantId?: true
   role?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +81,7 @@ export type MembershipCountAggregateInputType = {
   userId?: true
   tenantId?: true
   role?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type MembershipGroupByOutputType = {
   userId: string
   tenantId: string
   role: $Enums.InstituteRole
+  status: $Enums.MembershipStatus
   createdAt: Date
   updatedAt: Date
   _count: MembershipCountAggregateOutputType | null
@@ -188,6 +195,7 @@ export type MembershipWhereInput = {
   userId?: Prisma.StringFilter<"Membership"> | string
   tenantId?: Prisma.StringFilter<"Membership"> | string
   role?: Prisma.EnumInstituteRoleFilter<"Membership"> | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -199,6 +207,7 @@ export type MembershipOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -214,6 +223,7 @@ export type MembershipWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Membership"> | string
   tenantId?: Prisma.StringFilter<"Membership"> | string
   role?: Prisma.EnumInstituteRoleFilter<"Membership"> | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -225,6 +235,7 @@ export type MembershipOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MembershipCountOrderByAggregateInput
@@ -240,6 +251,7 @@ export type MembershipScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Membership"> | string
   tenantId?: Prisma.StringWithAggregatesFilter<"Membership"> | string
   role?: Prisma.EnumInstituteRoleWithAggregatesFilter<"Membership"> | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusWithAggregatesFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Membership"> | Date | string
 }
@@ -247,6 +259,7 @@ export type MembershipScalarWhereWithAggregatesInput = {
 export type MembershipCreateInput = {
   id?: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
@@ -258,6 +271,7 @@ export type MembershipUncheckedCreateInput = {
   userId: string
   tenantId: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -265,6 +279,7 @@ export type MembershipUncheckedCreateInput = {
 export type MembershipUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
@@ -276,6 +291,7 @@ export type MembershipUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -285,6 +301,7 @@ export type MembershipCreateManyInput = {
   userId: string
   tenantId: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -292,6 +309,7 @@ export type MembershipCreateManyInput = {
 export type MembershipUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -301,6 +319,7 @@ export type MembershipUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -325,6 +344,7 @@ export type MembershipCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -334,6 +354,7 @@ export type MembershipMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -343,6 +364,7 @@ export type MembershipMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -435,9 +457,14 @@ export type EnumInstituteRoleFieldUpdateOperationsInput = {
   set?: $Enums.InstituteRole
 }
 
+export type EnumMembershipStatusFieldUpdateOperationsInput = {
+  set?: $Enums.MembershipStatus
+}
+
 export type MembershipCreateWithoutTenantInput = {
   id?: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
@@ -447,6 +474,7 @@ export type MembershipUncheckedCreateWithoutTenantInput = {
   id?: string
   userId: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -485,6 +513,7 @@ export type MembershipScalarWhereInput = {
   userId?: Prisma.StringFilter<"Membership"> | string
   tenantId?: Prisma.StringFilter<"Membership"> | string
   role?: Prisma.EnumInstituteRoleFilter<"Membership"> | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFilter<"Membership"> | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
 }
@@ -492,6 +521,7 @@ export type MembershipScalarWhereInput = {
 export type MembershipCreateWithoutUserInput = {
   id?: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutMembershipsInput
@@ -501,6 +531,7 @@ export type MembershipUncheckedCreateWithoutUserInput = {
   id?: string
   tenantId: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -535,6 +566,7 @@ export type MembershipCreateManyTenantInput = {
   id?: string
   userId: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -542,6 +574,7 @@ export type MembershipCreateManyTenantInput = {
 export type MembershipUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
@@ -551,6 +584,7 @@ export type MembershipUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -559,6 +593,7 @@ export type MembershipUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -567,6 +602,7 @@ export type MembershipCreateManyUserInput = {
   id?: string
   tenantId: string
   role: $Enums.InstituteRole
+  status?: $Enums.MembershipStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -574,6 +610,7 @@ export type MembershipCreateManyUserInput = {
 export type MembershipUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutMembershipsNestedInput
@@ -583,6 +620,7 @@ export type MembershipUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -591,6 +629,7 @@ export type MembershipUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumInstituteRoleFieldUpdateOperationsInput | $Enums.InstituteRole
+  status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -602,6 +641,7 @@ export type MembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   userId?: boolean
   tenantId?: boolean
   role?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -613,6 +653,7 @@ export type MembershipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   userId?: boolean
   tenantId?: boolean
   role?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -624,6 +665,7 @@ export type MembershipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   userId?: boolean
   tenantId?: boolean
   role?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -635,11 +677,12 @@ export type MembershipSelectScalar = {
   userId?: boolean
   tenantId?: boolean
   role?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["membership"]>
+export type MembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "role" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["membership"]>
 export type MembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -664,6 +707,7 @@ export type $MembershipPayload<ExtArgs extends runtime.Types.Extensions.Internal
     userId: string
     tenantId: string
     role: $Enums.InstituteRole
+    status: $Enums.MembershipStatus
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["membership"]>
@@ -1095,6 +1139,7 @@ export interface MembershipFieldRefs {
   readonly userId: Prisma.FieldRef<"Membership", 'String'>
   readonly tenantId: Prisma.FieldRef<"Membership", 'String'>
   readonly role: Prisma.FieldRef<"Membership", 'InstituteRole'>
+  readonly status: Prisma.FieldRef<"Membership", 'MembershipStatus'>
   readonly createdAt: Prisma.FieldRef<"Membership", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Membership", 'DateTime'>
 }
