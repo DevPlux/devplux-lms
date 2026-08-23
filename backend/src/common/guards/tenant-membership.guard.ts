@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { PrismaService } from '../../database/prisma/prisma.service';
@@ -32,6 +33,12 @@ export class TenantMembershipGuard implements CanActivate {
 
     if (!membership) {
       throw new ForbiddenException('User no longer belongs to this institute');
+    }
+
+    if (membership.status !== 'ACTIVE') {
+      throw new ForbiddenException(
+        'Your membership in this institute is not active',
+      );
     }
 
     user.role = membership.role;
