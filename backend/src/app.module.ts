@@ -19,6 +19,7 @@ import { MembershipsModule } from './modules/memberships/memberships.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { InstituteModule } from './modules/institute/institute.module';
 import { InstituteUsersModule } from './modules/institute-users/institute-users.module';
+import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { InstituteUsersModule } from './modules/institute-users/institute-users.
     AuthModule,
     InstituteModule,
     InstituteUsersModule,
+    AuditLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -83,6 +85,18 @@ export class AppModule implements NestModule {
       },
       {
         path: 'institute-users/:userId',
+        method: RequestMethod.DELETE,
+      },
+      {
+        path: 'institute-users/:userId/sessions',
+        method: RequestMethod.GET,
+      },
+      {
+        path: 'institute-users/:userId/sessions/:sessionId',
+        method: RequestMethod.DELETE,
+      },
+      {
+        path: 'institute-users/:userId/sessions',
         method: RequestMethod.DELETE,
       },
     );
