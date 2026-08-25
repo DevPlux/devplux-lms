@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Req } from '@nestjs/common';
 
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 import { Protected } from '../../common/decorators/protected.decorator';
@@ -8,6 +8,8 @@ import type { TenantRequest } from '../../common/middleware/tenant-resolver.midd
 
 import { InstituteService } from './institute.service';
 import { UpdateInstituteProfileDto } from './dto/update-institute-profile.dto';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import type { AccessTokenPayload } from '../auth/types/auth.types';
 
 type CurrentTenantData = NonNullable<TenantRequest['tenant']>;
 
@@ -25,11 +27,19 @@ export class InstituteController {
   @Protected(InstituteRole.INSTITUTE_ADMIN)
   updateProfile(
     @CurrentTenant() tenant: CurrentTenantData,
-    @Body() updateInstituteProfileDto: UpdateInstituteProfileDto,
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
+    @Body()
+    updateInstituteProfileDto: UpdateInstituteProfileDto,
   ) {
     return this.instituteService.updateProfile(
       tenant.id,
       updateInstituteProfileDto,
+      {
+        actorUserId: currentUser.sub,
+        ipAddress: request.ip ?? undefined,
+        userAgent: request.headers['user-agent'] ?? undefined,
+      },
     );
   }
 }
