@@ -69,3 +69,8 @@ export type AuthSession = Prisma.AuthSessionModel
  * 
  */
 export type TenantProfile = Prisma.TenantProfileModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel
