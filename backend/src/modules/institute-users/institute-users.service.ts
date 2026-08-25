@@ -8,35 +8,99 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../database/prisma/prisma.service';
 import { CreateInstituteUserDto } from './dto/create-institute-user.dto';
 import { InstituteRole, MembershipStatus } from '../../generated/prisma/enums';
+import { QueryInstituteUsersDto } from './dto/query-institute-users.dto';
+import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { AuditAction } from '../audit-logs/enums/audit-action.enum';
 
 @Injectable()
 export class InstituteUsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly auditLogsService: AuditLogsService,
+  ) {}
 
-  async findAll(tenantId: string) {
-    return this.prisma.membership.findMany({
-      where: {
-        tenantId,
-      },
+  async findAll(tenantId: string, query: QueryInstituteUsersDto) {
+    const { page, limit, search, role, status } = query;
 
-      include: {
+    const skip = (page - 1) * limit;
+
+    const where = {
+      tenantId,
+
+      ...(role && {
+        role,
+      }),
+
+      ...(status && {
+        status,
+      }),
+
+      ...(search && {
         user: {
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true,
+          OR: [
+            {
+              email: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+            {
+              firstName: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+          ],
+        },
+      }),
+    };
+
+    const [memberships, total] = await this.prisma.$transaction([
+      this.prisma.membership.findMany({
+        where,
+        skip,
+        take: limit,
+
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              isActive: true,
+              createdAt: true,
+              updatedAt: true,
+            },
           },
         },
-      },
 
-      orderBy: {
-        createdAt: 'desc',
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+
+      this.prisma.membership.count({
+        where,
+      }),
+    ]);
+
+    return {
+      data: memberships,
+
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
       },
-    });
+    };
   }
 
   async findOne(tenantId: string, userId: string) {
@@ -151,7 +215,12 @@ export class InstituteUsersService {
     });
   }
 
-  async updateRole(tenantId: string, userId: string, role: InstituteRole) {
+  async updateRole(
+    tenantId: string,
+    userId: string,
+    role: InstituteRole,
+    actorUserId: string,
+  ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
         userId_tenantId: {
@@ -169,7 +238,7 @@ export class InstituteUsersService {
       await this.ensureNotLastActiveAdmin(tenantId, userId);
     }
 
-    return this.prisma.membership.update({
+    const updatedMembership = await this.prisma.membership.update({
       where: {
         userId_tenantId: {
           userId,
@@ -191,12 +260,28 @@ export class InstituteUsersService {
         },
       },
     });
+
+    await this.auditLogsService.create({
+      tenantId,
+      actorUserId,
+      action: AuditAction.MEMBERSHIP_ROLE_CHANGED,
+      targetType: 'Membership',
+      targetId: membership.id,
+      metadata: {
+        oldRole: membership.role,
+        newRole: role,
+        affectedUserId: userId,
+      },
+    });
+
+    return updatedMembership;
   }
 
   async updateStatus(
     tenantId: string,
     userId: string,
     status: MembershipStatus,
+    actorUserId: string,
   ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
@@ -215,7 +300,7 @@ export class InstituteUsersService {
       await this.ensureNotLastActiveAdmin(tenantId, userId);
     }
 
-    return this.prisma.membership.update({
+    const updatedMembership = await this.prisma.membership.update({
       where: {
         userId_tenantId: {
           userId,
@@ -237,9 +322,28 @@ export class InstituteUsersService {
         },
       },
     });
+
+    await this.auditLogsService.create({
+      tenantId,
+      actorUserId,
+      action: AuditAction.MEMBERSHIP_STATUS_CHANGED,
+      targetType: 'Membership',
+      targetId: membership.id,
+      metadata: {
+        oldStatus: membership.status,
+        newStatus: status,
+        affectedUserId: userId,
+      },
+    });
+
+    return updatedMembership;
   }
 
-  async removeFromInstitute(tenantId: string, userId: string) {
+  async removeFromInstitute(
+    tenantId: string,
+    userId: string,
+    actorUserId: string,
+  ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
         userId_tenantId: {
@@ -266,6 +370,19 @@ export class InstituteUsersService {
       },
     });
 
+    await this.auditLogsService.create({
+      tenantId,
+      actorUserId,
+      action: AuditAction.MEMBERSHIP_REMOVED,
+      targetType: 'Membership',
+      targetId: membership.id,
+      metadata: {
+        affectedUserId: userId,
+        removedRole: membership.role,
+        removedStatus: membership.status,
+      },
+    });
+
     await this.prisma.membership.delete({
       where: {
         userId_tenantId: {
@@ -277,6 +394,117 @@ export class InstituteUsersService {
 
     return {
       message: 'User removed from institute successfully',
+    };
+  }
+
+  async findSessions(tenantId: string, userId: string) {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('User not found in this institute');
+    }
+
+    return this.prisma.authSession.findMany({
+      where: {
+        userId,
+        tenantId,
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        expiresAt: true,
+        revokedAt: true,
+        userAgent: true,
+        ipAddress: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async revokeSession(tenantId: string, userId: string, sessionId: string) {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('User not found in this institute');
+    }
+
+    const session = await this.prisma.authSession.findFirst({
+      where: {
+        id: sessionId,
+        userId,
+        tenantId,
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException('Session not found for this user');
+    }
+
+    if (session.revokedAt) {
+      return {
+        message: 'Session is already revoked',
+      };
+    }
+
+    await this.prisma.authSession.update({
+      where: {
+        id: session.id,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    return {
+      message: 'Session revoked successfully',
+    };
+  }
+
+  async revokeAllSessions(tenantId: string, userId: string) {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('User not found in this institute');
+    }
+
+    const result = await this.prisma.authSession.updateMany({
+      where: {
+        userId,
+        tenantId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    return {
+      message: 'All sessions revoked successfully',
+      revokedSessions: result.count,
     };
   }
 
