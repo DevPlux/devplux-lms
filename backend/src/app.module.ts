@@ -99,6 +99,14 @@ export class AppModule implements NestModule {
         path: 'institute-users/:userId/sessions',
         method: RequestMethod.DELETE,
       },
+      {
+        path: 'audit-logs',
+        method: RequestMethod.GET,
+      },
+      {
+        path: 'audit-logs/:auditLogId',
+        method: RequestMethod.GET,
+      },
     );
   }
 }
