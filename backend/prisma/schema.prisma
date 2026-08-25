@@ -24,9 +24,10 @@ model Tenant {
   sessions    AuthSession[]
   profile     TenantProfile?
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  auditLogs AuditLog[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  auditLogs   AuditLog[]
+  invitations InstituteInvitation[]
 }
 
 model TenantDomain {
@@ -72,9 +73,10 @@ model User {
   memberships Membership[]
   sessions    AuthSession[]
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  auditLogs AuditLog[]
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  auditLogs       AuditLog[]
+  sentInvitations InstituteInvitation[]
 }
 
 model Membership {
@@ -166,4 +168,45 @@ model AuditLog {
   @@index([actorUserId])
   @@index([action])
   @@index([createdAt])
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+model InstituteInvitation {
+  id String @id @default(uuid())
+
+  tenantId        String
+  invitedByUserId String
+
+  email     String
+  firstName String
+  lastName  String
+
+  role   InstituteRole
+  status InvitationStatus @default(PENDING)
+
+  tokenHash String
+  expiresAt DateTime
+
+  acceptedAt DateTime?
+  revokedAt  DateTime?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  invitedBy User @relation(fields: [invitedByUserId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, email, status])
+  @@index([tenantId])
+  @@index([invitedByUserId])
+  @@index([email])
+  @@index([status])
+  @@index([expiresAt])
 }

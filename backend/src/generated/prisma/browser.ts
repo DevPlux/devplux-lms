@@ -52,3 +52,8 @@ export type TenantProfile = Prisma.TenantProfileModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model InstituteInvitation
+ * 
+ */
+export type InstituteInvitation = Prisma.InstituteInvitationModel

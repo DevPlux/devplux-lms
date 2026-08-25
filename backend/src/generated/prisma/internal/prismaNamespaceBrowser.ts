@@ -57,7 +57,8 @@ export const ModelName = {
   Membership: 'Membership',
   AuthSession: 'AuthSession',
   TenantProfile: 'TenantProfile',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  InstituteInvitation: 'InstituteInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -175,6 +176,26 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const InstituteInvitationScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  invitedByUserId: 'invitedByUserId',
+  email: 'email',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  role: 'role',
+  status: 'status',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InstituteInvitationScalarFieldEnum = (typeof InstituteInvitationScalarFieldEnum)[keyof typeof InstituteInvitationScalarFieldEnum]
 
 
 export const SortOrder = {
