@@ -20,6 +20,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { InstituteModule } from './modules/institute/institute.module';
 import { InstituteUsersModule } from './modules/institute-users/institute-users.module';
 import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
+import { InstituteInvitationsModule } from './modules/institute-invitations/institute-invitations.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
     InstituteModule,
     InstituteUsersModule,
     AuditLogsModule,
+    InstituteInvitationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -106,6 +108,10 @@ export class AppModule implements NestModule {
       {
         path: 'audit-logs/:auditLogId',
         method: RequestMethod.GET,
+      },
+      {
+        path: 'institute-invitations',
+        method: RequestMethod.POST,
       },
     );
   }
