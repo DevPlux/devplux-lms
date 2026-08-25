@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
@@ -50,9 +51,19 @@ export class InstituteUsersController {
   @Protected(InstituteRole.INSTITUTE_ADMIN)
   create(
     @CurrentTenant() tenant: CurrentTenantData,
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
     @Body() createInstituteUserDto: CreateInstituteUserDto,
   ) {
-    return this.instituteUsersService.create(tenant.id, createInstituteUserDto);
+    return this.instituteUsersService.create(
+      tenant.id,
+      createInstituteUserDto,
+      {
+        actorUserId: currentUser.sub,
+        ipAddress: request.ip ?? undefined,
+        userAgent: request.headers['user-agent'] ?? undefined,
+      },
+    );
   }
 
   @Patch(':userId/role')
@@ -60,6 +71,7 @@ export class InstituteUsersController {
   updateRole(
     @CurrentTenant() tenant: CurrentTenantData,
     @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
     @Param('userId') userId: string,
     @Body() updateRoleDto: UpdateInstituteUserRoleDto,
   ) {
@@ -67,7 +79,11 @@ export class InstituteUsersController {
       tenant.id,
       userId,
       updateRoleDto.role,
-      currentUser.sub,
+      {
+        actorUserId: currentUser.sub,
+        ipAddress: request.ip ?? undefined,
+        userAgent: request.headers['user-agent'] ?? undefined,
+      },
     );
   }
 
@@ -76,6 +92,7 @@ export class InstituteUsersController {
   updateStatus(
     @CurrentTenant() tenant: CurrentTenantData,
     @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
     @Param('userId') userId: string,
     @Body() updateStatusDto: UpdateInstituteUserStatusDto,
   ) {
@@ -83,7 +100,11 @@ export class InstituteUsersController {
       tenant.id,
       userId,
       updateStatusDto.status,
-      currentUser.sub,
+      {
+        actorUserId: currentUser.sub,
+        ipAddress: request.ip ?? undefined,
+        userAgent: request.headers['user-agent'] ?? undefined,
+      },
     );
   }
 
@@ -92,13 +113,14 @@ export class InstituteUsersController {
   removeFromInstitute(
     @CurrentTenant() tenant: CurrentTenantData,
     @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
     @Param('userId') userId: string,
   ) {
-    return this.instituteUsersService.removeFromInstitute(
-      tenant.id,
-      userId,
-      currentUser.sub,
-    );
+    return this.instituteUsersService.removeFromInstitute(tenant.id, userId, {
+      actorUserId: currentUser.sub,
+      ipAddress: request.ip ?? undefined,
+      userAgent: request.headers['user-agent'] ?? undefined,
+    });
   }
 
   @Get(':userId/sessions')
@@ -114,6 +136,8 @@ export class InstituteUsersController {
   @Protected(InstituteRole.INSTITUTE_ADMIN)
   revokeSession(
     @CurrentTenant() tenant: CurrentTenantData,
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
     @Param('userId') userId: string,
     @Param('sessionId') sessionId: string,
   ) {
@@ -121,6 +145,11 @@ export class InstituteUsersController {
       tenant.id,
       userId,
       sessionId,
+      {
+        actorUserId: currentUser.sub,
+        ipAddress: request.ip ?? undefined,
+        userAgent: request.headers['user-agent'] ?? undefined,
+      },
     );
   }
 
@@ -128,8 +157,14 @@ export class InstituteUsersController {
   @Protected(InstituteRole.INSTITUTE_ADMIN)
   revokeAllSessions(
     @CurrentTenant() tenant: CurrentTenantData,
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
     @Param('userId') userId: string,
   ) {
-    return this.instituteUsersService.revokeAllSessions(tenant.id, userId);
+    return this.instituteUsersService.revokeAllSessions(tenant.id, userId, {
+      actorUserId: currentUser.sub,
+      ipAddress: request.ip ?? undefined,
+      userAgent: request.headers['user-agent'] ?? undefined,
+    });
   }
 }
