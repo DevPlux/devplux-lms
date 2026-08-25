@@ -6,11 +6,15 @@ import {
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../../database/prisma/prisma.service';
-import { CreateInstituteUserDto } from './dto/create-institute-user.dto';
+
 import { InstituteRole, MembershipStatus } from '../../generated/prisma/enums';
+
+import { CreateInstituteUserDto } from './dto/create-institute-user.dto';
 import { QueryInstituteUsersDto } from './dto/query-institute-users.dto';
+
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { AuditAction } from '../audit-logs/enums/audit-action.enum';
+import type { AuditContext } from '../audit-logs/types/audit-context.type';
 
 @Injectable()
 export class InstituteUsersService {
@@ -137,6 +141,7 @@ export class InstituteUsersService {
   async create(
     tenantId: string,
     createInstituteUserDto: CreateInstituteUserDto,
+    auditContext: AuditContext,
   ) {
     const email = createInstituteUserDto.email.toLowerCase().trim();
 
@@ -146,6 +151,11 @@ export class InstituteUsersService {
       },
     });
 
+    /*
+     * CASE 1:
+     * User already exists globally,
+     * but may not belong to this tenant yet.
+     */
     if (existingUser) {
       const existingMembership = await this.prisma.membership.findUnique({
         where: {
@@ -166,6 +176,7 @@ export class InstituteUsersService {
           tenantId,
           role: createInstituteUserDto.role,
         },
+
         include: {
           user: {
             select: {
@@ -179,17 +190,42 @@ export class InstituteUsersService {
         },
       });
 
+      await this.auditLogsService.create({
+        tenantId,
+        actorUserId: auditContext.actorUserId,
+        ipAddress: auditContext.ipAddress,
+        userAgent: auditContext.userAgent,
+
+        action: AuditAction.INSTITUTE_USER_ADDED,
+
+        targetType: 'Membership',
+        targetId: membership.id,
+
+        metadata: {
+          affectedUserId: existingUser.id,
+          role: membership.role,
+          existingUser: true,
+        },
+      });
+
       return membership;
     }
 
+    /*
+     * CASE 2:
+     * Completely new global User.
+     */
     const passwordHash = await bcrypt.hash(createInstituteUserDto.password, 12);
 
-    return this.prisma.$transaction(async (tx) => {
+    const membership = await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
           email,
+
           firstName: createInstituteUserDto.firstName.trim(),
+
           lastName: createInstituteUserDto.lastName.trim(),
+
           passwordHash,
         },
       });
@@ -200,6 +236,7 @@ export class InstituteUsersService {
           tenantId,
           role: createInstituteUserDto.role,
         },
+
         include: {
           user: {
             select: {
@@ -213,13 +250,33 @@ export class InstituteUsersService {
         },
       });
     });
+
+    await this.auditLogsService.create({
+      tenantId,
+      actorUserId: auditContext.actorUserId,
+      ipAddress: auditContext.ipAddress,
+      userAgent: auditContext.userAgent,
+
+      action: AuditAction.INSTITUTE_USER_ADDED,
+
+      targetType: 'Membership',
+      targetId: membership.id,
+
+      metadata: {
+        affectedUserId: membership.userId,
+        role: membership.role,
+        existingUser: false,
+      },
+    });
+
+    return membership;
   }
 
   async updateRole(
     tenantId: string,
     userId: string,
     role: InstituteRole,
-    actorUserId: string,
+    auditContext: AuditContext,
   ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
@@ -245,9 +302,11 @@ export class InstituteUsersService {
           tenantId,
         },
       },
+
       data: {
         role,
       },
+
       include: {
         user: {
           select: {
@@ -263,10 +322,15 @@ export class InstituteUsersService {
 
     await this.auditLogsService.create({
       tenantId,
-      actorUserId,
+      actorUserId: auditContext.actorUserId,
+      ipAddress: auditContext.ipAddress,
+      userAgent: auditContext.userAgent,
+
       action: AuditAction.MEMBERSHIP_ROLE_CHANGED,
+
       targetType: 'Membership',
       targetId: membership.id,
+
       metadata: {
         oldRole: membership.role,
         newRole: role,
@@ -281,7 +345,7 @@ export class InstituteUsersService {
     tenantId: string,
     userId: string,
     status: MembershipStatus,
-    actorUserId: string,
+    auditContext: AuditContext,
   ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
@@ -307,9 +371,11 @@ export class InstituteUsersService {
           tenantId,
         },
       },
+
       data: {
         status,
       },
+
       include: {
         user: {
           select: {
@@ -325,10 +391,15 @@ export class InstituteUsersService {
 
     await this.auditLogsService.create({
       tenantId,
-      actorUserId,
+      actorUserId: auditContext.actorUserId,
+      ipAddress: auditContext.ipAddress,
+      userAgent: auditContext.userAgent,
+
       action: AuditAction.MEMBERSHIP_STATUS_CHANGED,
+
       targetType: 'Membership',
       targetId: membership.id,
+
       metadata: {
         oldStatus: membership.status,
         newStatus: status,
@@ -342,7 +413,7 @@ export class InstituteUsersService {
   async removeFromInstitute(
     tenantId: string,
     userId: string,
-    actorUserId: string,
+    auditContext: AuditContext,
   ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
@@ -365,6 +436,7 @@ export class InstituteUsersService {
         tenantId,
         revokedAt: null,
       },
+
       data: {
         revokedAt: new Date(),
       },
@@ -372,10 +444,15 @@ export class InstituteUsersService {
 
     await this.auditLogsService.create({
       tenantId,
-      actorUserId,
+      actorUserId: auditContext.actorUserId,
+      ipAddress: auditContext.ipAddress,
+      userAgent: auditContext.userAgent,
+
       action: AuditAction.MEMBERSHIP_REMOVED,
+
       targetType: 'Membership',
       targetId: membership.id,
+
       metadata: {
         affectedUserId: userId,
         removedRole: membership.role,
@@ -416,6 +493,7 @@ export class InstituteUsersService {
         userId,
         tenantId,
       },
+
       select: {
         id: true,
         createdAt: true,
@@ -425,13 +503,19 @@ export class InstituteUsersService {
         userAgent: true,
         ipAddress: true,
       },
+
       orderBy: {
         createdAt: 'desc',
       },
     });
   }
 
-  async revokeSession(tenantId: string, userId: string, sessionId: string) {
+  async revokeSession(
+    tenantId: string,
+    userId: string,
+    sessionId: string,
+    auditContext: AuditContext,
+  ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
         userId_tenantId: {
@@ -467,8 +551,30 @@ export class InstituteUsersService {
       where: {
         id: session.id,
       },
+
       data: {
         revokedAt: new Date(),
+      },
+    });
+
+    await this.auditLogsService.create({
+      tenantId,
+      actorUserId: auditContext.actorUserId,
+      ipAddress: auditContext.ipAddress,
+      userAgent: auditContext.userAgent,
+
+      action: AuditAction.SESSION_REVOKED,
+
+      targetType: 'AuthSession',
+      targetId: session.id,
+
+      metadata: {
+        affectedUserId: userId,
+        sessionId: session.id,
+
+        sessionIpAddress: session.ipAddress,
+
+        sessionUserAgent: session.userAgent,
       },
     });
 
@@ -477,7 +583,11 @@ export class InstituteUsersService {
     };
   }
 
-  async revokeAllSessions(tenantId: string, userId: string) {
+  async revokeAllSessions(
+    tenantId: string,
+    userId: string,
+    auditContext: AuditContext,
+  ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
         userId_tenantId: {
@@ -497,13 +607,32 @@ export class InstituteUsersService {
         tenantId,
         revokedAt: null,
       },
+
       data: {
         revokedAt: new Date(),
       },
     });
 
+    await this.auditLogsService.create({
+      tenantId,
+      actorUserId: auditContext.actorUserId,
+      ipAddress: auditContext.ipAddress,
+      userAgent: auditContext.userAgent,
+
+      action: AuditAction.ALL_SESSIONS_REVOKED,
+
+      targetType: 'User',
+      targetId: userId,
+
+      metadata: {
+        affectedUserId: userId,
+        revokedSessions: result.count,
+      },
+    });
+
     return {
       message: 'All sessions revoked successfully',
+
       revokedSessions: result.count,
     };
   }
@@ -539,7 +668,7 @@ export class InstituteUsersService {
 
     if (activeAdminCount <= 1) {
       throw new ConflictException(
-        'Cannot remove or suspend the last active institute admin',
+        'Cannot modify the last active institute admin',
       );
     }
   }
