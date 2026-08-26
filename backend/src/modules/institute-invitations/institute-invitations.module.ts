@@ -5,9 +5,10 @@ import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 
 import { InstituteInvitationsController } from './institute-invitations.controller';
 import { InstituteInvitationsService } from './institute-invitations.service';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [AuthModule, AuditLogsModule],
+  imports: [AuthModule, AuditLogsModule, MailModule],
   controllers: [InstituteInvitationsController],
   providers: [InstituteInvitationsService],
 })
