@@ -37,6 +37,9 @@ export type InstituteInvitationMinAggregateOutputType = {
   expiresAt: Date | null
   acceptedAt: Date | null
   revokedAt: Date | null
+  emailStatus: $Enums.InvitationEmailStatus | null
+  emailSentAt: Date | null
+  emailError: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +57,9 @@ export type InstituteInvitationMaxAggregateOutputType = {
   expiresAt: Date | null
   acceptedAt: Date | null
   revokedAt: Date | null
+  emailStatus: $Enums.InvitationEmailStatus | null
+  emailSentAt: Date | null
+  emailError: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +77,9 @@ export type InstituteInvitationCountAggregateOutputType = {
   expiresAt: number
   acceptedAt: number
   revokedAt: number
+  emailStatus: number
+  emailSentAt: number
+  emailError: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +99,9 @@ export type InstituteInvitationMinAggregateInputType = {
   expiresAt?: true
   acceptedAt?: true
   revokedAt?: true
+  emailStatus?: true
+  emailSentAt?: true
+  emailError?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +119,9 @@ export type InstituteInvitationMaxAggregateInputType = {
   expiresAt?: true
   acceptedAt?: true
   revokedAt?: true
+  emailStatus?: true
+  emailSentAt?: true
+  emailError?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +139,9 @@ export type InstituteInvitationCountAggregateInputType = {
   expiresAt?: true
   acceptedAt?: true
   revokedAt?: true
+  emailStatus?: true
+  emailSentAt?: true
+  emailError?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +232,9 @@ export type InstituteInvitationGroupByOutputType = {
   expiresAt: Date
   acceptedAt: Date | null
   revokedAt: Date | null
+  emailStatus: $Enums.InvitationEmailStatus
+  emailSentAt: Date | null
+  emailError: string | null
   createdAt: Date
   updatedAt: Date
   _count: InstituteInvitationCountAggregateOutputType | null
@@ -252,6 +273,9 @@ export type InstituteInvitationWhereInput = {
   expiresAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   acceptedAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFilter<"InstituteInvitation"> | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
+  emailError?: Prisma.StringNullableFilter<"InstituteInvitation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -271,6 +295,9 @@ export type InstituteInvitationOrderByWithRelationInput = {
   expiresAt?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailStatus?: Prisma.SortOrder
+  emailSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailError?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
@@ -294,6 +321,9 @@ export type InstituteInvitationWhereUniqueInput = Prisma.AtLeast<{
   expiresAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   acceptedAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFilter<"InstituteInvitation"> | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
+  emailError?: Prisma.StringNullableFilter<"InstituteInvitation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -313,6 +343,9 @@ export type InstituteInvitationOrderByWithAggregationInput = {
   expiresAt?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailStatus?: Prisma.SortOrder
+  emailSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailError?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.InstituteInvitationCountOrderByAggregateInput
@@ -336,6 +369,9 @@ export type InstituteInvitationScalarWhereWithAggregatesInput = {
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"InstituteInvitation"> | Date | string
   acceptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"InstituteInvitation"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"InstituteInvitation"> | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusWithAggregatesFilter<"InstituteInvitation"> | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"InstituteInvitation"> | Date | string | null
+  emailError?: Prisma.StringNullableWithAggregatesFilter<"InstituteInvitation"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"InstituteInvitation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"InstituteInvitation"> | Date | string
 }
@@ -351,6 +387,9 @@ export type InstituteInvitationCreateInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutInvitationsInput
@@ -370,6 +409,9 @@ export type InstituteInvitationUncheckedCreateInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -385,6 +427,9 @@ export type InstituteInvitationUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutInvitationsNestedInput
@@ -404,6 +449,9 @@ export type InstituteInvitationUncheckedUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -421,6 +469,9 @@ export type InstituteInvitationCreateManyInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -436,6 +487,9 @@ export type InstituteInvitationUpdateManyMutationInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -453,6 +507,9 @@ export type InstituteInvitationUncheckedUpdateManyInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -486,6 +543,9 @@ export type InstituteInvitationCountOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
+  emailStatus?: Prisma.SortOrder
+  emailSentAt?: Prisma.SortOrder
+  emailError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -503,6 +563,9 @@ export type InstituteInvitationMaxOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
+  emailStatus?: Prisma.SortOrder
+  emailSentAt?: Prisma.SortOrder
+  emailError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -520,6 +583,9 @@ export type InstituteInvitationMinOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   acceptedAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
+  emailStatus?: Prisma.SortOrder
+  emailSentAt?: Prisma.SortOrder
+  emailError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -612,6 +678,10 @@ export type EnumInvitationStatusFieldUpdateOperationsInput = {
   set?: $Enums.InvitationStatus
 }
 
+export type EnumInvitationEmailStatusFieldUpdateOperationsInput = {
+  set?: $Enums.InvitationEmailStatus
+}
+
 export type InstituteInvitationCreateWithoutTenantInput = {
   id?: string
   email: string
@@ -623,6 +693,9 @@ export type InstituteInvitationCreateWithoutTenantInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   invitedBy: Prisma.UserCreateNestedOneWithoutSentInvitationsInput
@@ -640,6 +713,9 @@ export type InstituteInvitationUncheckedCreateWithoutTenantInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -686,6 +762,9 @@ export type InstituteInvitationScalarWhereInput = {
   expiresAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   acceptedAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
   revokedAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFilter<"InstituteInvitation"> | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.DateTimeNullableFilter<"InstituteInvitation"> | Date | string | null
+  emailError?: Prisma.StringNullableFilter<"InstituteInvitation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InstituteInvitation"> | Date | string
 }
@@ -701,6 +780,9 @@ export type InstituteInvitationCreateWithoutInvitedByInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutInvitationsInput
@@ -718,6 +800,9 @@ export type InstituteInvitationUncheckedCreateWithoutInvitedByInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -760,6 +845,9 @@ export type InstituteInvitationCreateManyTenantInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -775,6 +863,9 @@ export type InstituteInvitationUpdateWithoutTenantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invitedBy?: Prisma.UserUpdateOneRequiredWithoutSentInvitationsNestedInput
@@ -792,6 +883,9 @@ export type InstituteInvitationUncheckedUpdateWithoutTenantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -808,6 +902,9 @@ export type InstituteInvitationUncheckedUpdateManyWithoutTenantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -824,6 +921,9 @@ export type InstituteInvitationCreateManyInvitedByInput = {
   expiresAt: Date | string
   acceptedAt?: Date | string | null
   revokedAt?: Date | string | null
+  emailStatus?: $Enums.InvitationEmailStatus
+  emailSentAt?: Date | string | null
+  emailError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -839,6 +939,9 @@ export type InstituteInvitationUpdateWithoutInvitedByInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutInvitationsNestedInput
@@ -856,6 +959,9 @@ export type InstituteInvitationUncheckedUpdateWithoutInvitedByInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -872,6 +978,9 @@ export type InstituteInvitationUncheckedUpdateManyWithoutInvitedByInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailStatus?: Prisma.EnumInvitationEmailStatusFieldUpdateOperationsInput | $Enums.InvitationEmailStatus
+  emailSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -891,6 +1000,9 @@ export type InstituteInvitationSelect<ExtArgs extends runtime.Types.Extensions.I
   expiresAt?: boolean
   acceptedAt?: boolean
   revokedAt?: boolean
+  emailStatus?: boolean
+  emailSentAt?: boolean
+  emailError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -910,6 +1022,9 @@ export type InstituteInvitationSelectCreateManyAndReturn<ExtArgs extends runtime
   expiresAt?: boolean
   acceptedAt?: boolean
   revokedAt?: boolean
+  emailStatus?: boolean
+  emailSentAt?: boolean
+  emailError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -929,6 +1044,9 @@ export type InstituteInvitationSelectUpdateManyAndReturn<ExtArgs extends runtime
   expiresAt?: boolean
   acceptedAt?: boolean
   revokedAt?: boolean
+  emailStatus?: boolean
+  emailSentAt?: boolean
+  emailError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -948,11 +1066,14 @@ export type InstituteInvitationSelectScalar = {
   expiresAt?: boolean
   acceptedAt?: boolean
   revokedAt?: boolean
+  emailStatus?: boolean
+  emailSentAt?: boolean
+  emailError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type InstituteInvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "invitedByUserId" | "email" | "firstName" | "lastName" | "role" | "status" | "tokenHash" | "expiresAt" | "acceptedAt" | "revokedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["instituteInvitation"]>
+export type InstituteInvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "invitedByUserId" | "email" | "firstName" | "lastName" | "role" | "status" | "tokenHash" | "expiresAt" | "acceptedAt" | "revokedAt" | "emailStatus" | "emailSentAt" | "emailError" | "createdAt" | "updatedAt", ExtArgs["result"]["instituteInvitation"]>
 export type InstituteInvitationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   invitedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -985,6 +1106,9 @@ export type $InstituteInvitationPayload<ExtArgs extends runtime.Types.Extensions
     expiresAt: Date
     acceptedAt: Date | null
     revokedAt: Date | null
+    emailStatus: $Enums.InvitationEmailStatus
+    emailSentAt: Date | null
+    emailError: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["instituteInvitation"]>
@@ -1424,6 +1548,9 @@ export interface InstituteInvitationFieldRefs {
   readonly expiresAt: Prisma.FieldRef<"InstituteInvitation", 'DateTime'>
   readonly acceptedAt: Prisma.FieldRef<"InstituteInvitation", 'DateTime'>
   readonly revokedAt: Prisma.FieldRef<"InstituteInvitation", 'DateTime'>
+  readonly emailStatus: Prisma.FieldRef<"InstituteInvitation", 'InvitationEmailStatus'>
+  readonly emailSentAt: Prisma.FieldRef<"InstituteInvitation", 'DateTime'>
+  readonly emailError: Prisma.FieldRef<"InstituteInvitation", 'String'>
   readonly createdAt: Prisma.FieldRef<"InstituteInvitation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"InstituteInvitation", 'DateTime'>
 }

@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { PrismaService } from '../../database/prisma/prisma.service';
-import type { Prisma } from '../../generated/prisma/client';
+import { InvitationStatus, Prisma } from '../../generated/prisma/client';
 import { AuditAction } from './enums/audit-action.enum';
 
 import { QueryAuditLogsDto } from './dto/query-audit-logs.dto';
+import { AuditContext } from './types/audit-context.type';
 
 interface CreateAuditLogInput {
   tenantId: string;

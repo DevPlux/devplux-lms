@@ -1169,6 +1169,9 @@ export const InstituteInvitationScalarFieldEnum = {
   expiresAt: 'expiresAt',
   acceptedAt: 'acceptedAt',
   revokedAt: 'revokedAt',
+  emailStatus: 'emailStatus',
+  emailSentAt: 'emailSentAt',
+  emailError: 'emailError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1325,6 +1328,20 @@ export type EnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'InvitationStatus[]'
  */
 export type ListEnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InvitationEmailStatus'
+ */
+export type EnumInvitationEmailStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationEmailStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'InvitationEmailStatus[]'
+ */
+export type ListEnumInvitationEmailStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationEmailStatus[]'>
     
 
 

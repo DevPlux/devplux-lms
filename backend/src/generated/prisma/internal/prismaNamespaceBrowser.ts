@@ -191,6 +191,9 @@ export const InstituteInvitationScalarFieldEnum = {
   expiresAt: 'expiresAt',
   acceptedAt: 'acceptedAt',
   revokedAt: 'revokedAt',
+  emailStatus: 'emailStatus',
+  emailSentAt: 'emailSentAt',
+  emailError: 'emailError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
