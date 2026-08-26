@@ -8,9 +8,11 @@ import { ConfigService } from '@nestjs/config';
 
 import { createHash, randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
+
 import { PrismaService } from '../../database/prisma/prisma.service';
 
 import {
+  InvitationEmailStatus,
   InvitationStatus,
   MembershipStatus,
 } from '../../generated/prisma/enums';
@@ -19,8 +21,11 @@ import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { AuditAction } from '../audit-logs/enums/audit-action.enum';
 import type { AuditContext } from '../audit-logs/types/audit-context.type';
 
+import { MailService } from '../mail/mail.service';
+
 import { CreateInstituteInvitationDto } from './dto/create-institute-invitation.dto';
 import { AcceptInstituteInvitationDto } from './dto/accept-institute-invitation.dto';
+import { QueryInstituteInvitationsDto } from './dto/query-institute-invitations.dto';
 
 @Injectable()
 export class InstituteInvitationsService {
@@ -28,6 +33,7 @@ export class InstituteInvitationsService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly auditLogsService: AuditLogsService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(
@@ -79,6 +85,12 @@ export class InstituteInvitationsService {
       );
     }
 
+    /*
+     * Generate invitation token.
+     *
+     * Raw token is sent through email.
+     * Only the SHA-256 hash is stored.
+     */
     const rawToken = randomBytes(32).toString('hex');
 
     const tokenHash = createHash('sha256').update(rawToken).digest('hex');
@@ -86,25 +98,54 @@ export class InstituteInvitationsService {
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24);
 
+    /*
+     * Retrieve tenant before creating the invitation.
+     */
+    const tenant = await this.prisma.tenant.findUnique({
+      where: {
+        id: tenantId,
+      },
+      select: {
+        name: true,
+      },
+    });
+
+    if (!tenant) {
+      throw new NotFoundException('Institute not found');
+    }
+
+    /*
+     * Create invitation.
+     *
+     * emailStatus starts as PENDING.
+     */
     const invitation = await this.prisma.instituteInvitation.create({
       data: {
         tenantId,
         invitedByUserId,
 
         email,
+
         firstName: dto.firstName.trim(),
         lastName: dto.lastName.trim(),
 
         role: dto.role,
+
         status: InvitationStatus.PENDING,
 
         tokenHash,
         expiresAt,
+
+        emailStatus: InvitationEmailStatus.PENDING,
       },
     });
 
+    /*
+     * Audit invitation creation.
+     */
     await this.auditLogsService.create({
       tenantId,
+
       actorUserId: auditContext.actorUserId,
       ipAddress: auditContext.ipAddress,
       userAgent: auditContext.userAgent,
@@ -121,31 +162,103 @@ export class InstituteInvitationsService {
       },
     });
 
+    /*
+     * Build invitation URL.
+     */
     const frontendUrl =
       this.configService.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
 
     const invitationUrl = `${frontendUrl}/accept-invitation?token=${rawToken}`;
 
-    return {
-      message: 'Invitation created successfully',
-
-      invitation: {
-        id: invitation.id,
-        email: invitation.email,
+    /*
+     * Attempt email delivery.
+     *
+     * IMPORTANT:
+     * We do not delete the invitation when email delivery fails.
+     * The admin can resend it later.
+     */
+    try {
+      await this.mailService.sendInstituteInvitation({
+        to: invitation.email,
         firstName: invitation.firstName,
-        lastName: invitation.lastName,
+        instituteName: tenant.name,
         role: invitation.role,
-        status: invitation.status,
+        invitationUrl,
         expiresAt: invitation.expiresAt,
-      },
+      });
 
-      /*
-       * Development only.
-       * Later this URL will be sent by email
-       * and removed from the API response.
-       */
-      invitationUrl,
-    };
+      const sentInvitation = await this.prisma.instituteInvitation.update({
+        where: {
+          id: invitation.id,
+        },
+        data: {
+          emailStatus: InvitationEmailStatus.SENT,
+          emailSentAt: new Date(),
+          emailError: null,
+        },
+      });
+
+      return {
+        message: 'Invitation created and email sent successfully',
+
+        invitation: {
+          id: sentInvitation.id,
+          email: sentInvitation.email,
+          firstName: sentInvitation.firstName,
+          lastName: sentInvitation.lastName,
+          role: sentInvitation.role,
+          status: sentInvitation.status,
+          expiresAt: sentInvitation.expiresAt,
+
+          emailStatus: sentInvitation.emailStatus,
+          emailSentAt: sentInvitation.emailSentAt,
+          emailError: sentInvitation.emailError,
+        },
+
+        /*
+         * DEVELOPMENT ONLY.
+         * Remove this from production API responses.
+         */
+        invitationUrl,
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown email delivery error';
+
+      const failedInvitation = await this.prisma.instituteInvitation.update({
+        where: {
+          id: invitation.id,
+        },
+        data: {
+          emailStatus: InvitationEmailStatus.FAILED,
+          emailSentAt: null,
+          emailError: errorMessage,
+        },
+      });
+
+      return {
+        message: 'Invitation created, but email delivery failed',
+
+        invitation: {
+          id: failedInvitation.id,
+          email: failedInvitation.email,
+          firstName: failedInvitation.firstName,
+          lastName: failedInvitation.lastName,
+          role: failedInvitation.role,
+          status: failedInvitation.status,
+          expiresAt: failedInvitation.expiresAt,
+
+          emailStatus: failedInvitation.emailStatus,
+          emailSentAt: failedInvitation.emailSentAt,
+          emailError: failedInvitation.emailError,
+        },
+
+        /*
+         * DEVELOPMENT ONLY.
+         */
+        invitationUrl,
+      };
+    }
   }
 
   async validateInvitation(rawToken: string) {
@@ -156,6 +269,7 @@ export class InstituteInvitationsService {
         tokenHash,
         status: InvitationStatus.PENDING,
       },
+
       include: {
         tenant: {
           select: {
@@ -186,6 +300,7 @@ export class InstituteInvitationsService {
 
     return {
       valid: true,
+
       invitation: {
         email: invitation.email,
         firstName: invitation.firstName,
@@ -233,6 +348,10 @@ export class InstituteInvitationsService {
     let userId: string;
 
     if (existingUser) {
+      /*
+       * Existing global user:
+       * never replace their existing password.
+       */
       userId = existingUser.id;
 
       const existingMembership = await this.prisma.membership.findUnique({
@@ -248,6 +367,11 @@ export class InstituteInvitationsService {
         throw new ConflictException('User already belongs to this institute');
       }
     } else {
+      /*
+       * New user:
+       * create their account using the password
+       * selected during invitation acceptance.
+       */
       const passwordHash = await bcrypt.hash(dto.password, 12);
 
       const newUser = await this.prisma.user.create({
@@ -290,6 +414,7 @@ export class InstituteInvitationsService {
 
     return {
       message: 'Invitation accepted successfully',
+
       membership: {
         id: result.membership.id,
         tenantId: result.membership.tenantId,
@@ -297,5 +422,380 @@ export class InstituteInvitationsService {
         status: result.membership.status,
       },
     };
+  }
+
+  async findAll(tenantId: string, query: QueryInstituteInvitationsDto) {
+    const { page, limit, status, search } = query;
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      tenantId,
+
+      ...(status && {
+        status,
+      }),
+
+      ...(search && {
+        OR: [
+          {
+            email: {
+              contains: search,
+              mode: 'insensitive' as const,
+            },
+          },
+          {
+            firstName: {
+              contains: search,
+              mode: 'insensitive' as const,
+            },
+          },
+          {
+            lastName: {
+              contains: search,
+              mode: 'insensitive' as const,
+            },
+          },
+        ],
+      }),
+    };
+
+    const [invitations, total] = await this.prisma.$transaction([
+      this.prisma.instituteInvitation.findMany({
+        where,
+
+        skip,
+        take: limit,
+
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+
+          status: true,
+
+          /*
+           * Email delivery information.
+           */
+          emailStatus: true,
+          emailSentAt: true,
+          emailError: true,
+
+          expiresAt: true,
+          acceptedAt: true,
+          revokedAt: true,
+
+          createdAt: true,
+          updatedAt: true,
+
+          invitedBy: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+
+      this.prisma.instituteInvitation.count({
+        where,
+      }),
+    ]);
+
+    return {
+      data: invitations,
+
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async revoke(
+    tenantId: string,
+    invitationId: string,
+    auditContext: AuditContext,
+  ) {
+    const invitation = await this.prisma.instituteInvitation.findFirst({
+      where: {
+        id: invitationId,
+        tenantId,
+      },
+    });
+
+    if (!invitation) {
+      throw new NotFoundException('Invitation not found');
+    }
+
+    if (invitation.status !== InvitationStatus.PENDING) {
+      throw new ConflictException('Only pending invitations can be revoked');
+    }
+
+    const revokedInvitation = await this.prisma.instituteInvitation.update({
+      where: {
+        id: invitation.id,
+      },
+
+      data: {
+        status: InvitationStatus.REVOKED,
+        revokedAt: new Date(),
+      },
+    });
+
+    await this.auditLogsService.create({
+      tenantId,
+
+      actorUserId: auditContext.actorUserId,
+
+      ipAddress: auditContext.ipAddress,
+
+      userAgent: auditContext.userAgent,
+
+      action: AuditAction.INSTITUTE_INVITATION_REVOKED,
+
+      targetType: 'InstituteInvitation',
+      targetId: invitation.id,
+
+      metadata: {
+        email: invitation.email,
+        role: invitation.role,
+      },
+    });
+
+    return {
+      message: 'Invitation revoked successfully',
+
+      invitation: {
+        id: revokedInvitation.id,
+        email: revokedInvitation.email,
+        status: revokedInvitation.status,
+        revokedAt: revokedInvitation.revokedAt,
+
+        emailStatus: revokedInvitation.emailStatus,
+      },
+    };
+  }
+
+  async resend(
+    tenantId: string,
+    invitationId: string,
+    auditContext: AuditContext,
+  ) {
+    const invitation = await this.prisma.instituteInvitation.findFirst({
+      where: {
+        id: invitationId,
+        tenantId,
+      },
+    });
+
+    if (!invitation) {
+      throw new NotFoundException('Invitation not found');
+    }
+
+    /*
+     * Once accepted, an invitation is finished.
+     * It must never be resent.
+     */
+    if (invitation.status === InvitationStatus.ACCEPTED) {
+      throw new ConflictException('Accepted invitations cannot be resent');
+    }
+
+    /*
+     * Generate a completely new token.
+     *
+     * Replacing tokenHash automatically
+     * invalidates the previous invitation URL.
+     */
+    const rawToken = randomBytes(32).toString('hex');
+
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+
+    const expiresAt = new Date();
+
+    expiresAt.setHours(expiresAt.getHours() + 24);
+
+    /*
+     * Reset invitation lifecycle and
+     * email delivery lifecycle.
+     */
+    const updatedInvitation = await this.prisma.instituteInvitation.update({
+      where: {
+        id: invitation.id,
+      },
+
+      data: {
+        tokenHash,
+
+        status: InvitationStatus.PENDING,
+        expiresAt,
+
+        acceptedAt: null,
+        revokedAt: null,
+
+        emailStatus: InvitationEmailStatus.PENDING,
+
+        emailSentAt: null,
+        emailError: null,
+      },
+    });
+
+    /*
+     * Record the resend action.
+     */
+    await this.auditLogsService.create({
+      tenantId,
+
+      actorUserId: auditContext.actorUserId,
+
+      ipAddress: auditContext.ipAddress,
+
+      userAgent: auditContext.userAgent,
+
+      action: AuditAction.INSTITUTE_INVITATION_RESENT,
+
+      targetType: 'InstituteInvitation',
+      targetId: invitation.id,
+
+      metadata: {
+        email: invitation.email,
+        role: invitation.role,
+        expiresAt: expiresAt.toISOString(),
+      },
+    });
+
+    /*
+     * Build fresh URL containing
+     * the new raw token.
+     */
+    const frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
+
+    const invitationUrl = `${frontendUrl}/accept-invitation?token=${rawToken}`;
+
+    /*
+     * Retrieve institute information
+     * for the email template.
+     */
+    const tenant = await this.prisma.tenant.findUnique({
+      where: {
+        id: tenantId,
+      },
+      select: {
+        name: true,
+      },
+    });
+
+    if (!tenant) {
+      throw new NotFoundException('Institute not found');
+    }
+
+    /*
+     * Attempt delivery of the new email.
+     */
+    try {
+      await this.mailService.sendInstituteInvitation({
+        to: updatedInvitation.email,
+        firstName: updatedInvitation.firstName,
+        instituteName: tenant.name,
+        role: updatedInvitation.role,
+        invitationUrl,
+        expiresAt: updatedInvitation.expiresAt,
+      });
+
+      const sentInvitation = await this.prisma.instituteInvitation.update({
+        where: {
+          id: updatedInvitation.id,
+        },
+        data: {
+          emailStatus: InvitationEmailStatus.SENT,
+
+          emailSentAt: new Date(),
+
+          emailError: null,
+        },
+      });
+
+      return {
+        message: 'Invitation resent and email sent successfully',
+
+        invitation: {
+          id: sentInvitation.id,
+          email: sentInvitation.email,
+          firstName: sentInvitation.firstName,
+          lastName: sentInvitation.lastName,
+          role: sentInvitation.role,
+          status: sentInvitation.status,
+          expiresAt: sentInvitation.expiresAt,
+
+          emailStatus: sentInvitation.emailStatus,
+
+          emailSentAt: sentInvitation.emailSentAt,
+
+          emailError: sentInvitation.emailError,
+        },
+
+        /*
+         * DEVELOPMENT ONLY.
+         */
+        invitationUrl,
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown email delivery error';
+
+      /*
+       * Keep the invitation alive.
+       * Only mark email delivery as FAILED.
+       */
+      const failedInvitation = await this.prisma.instituteInvitation.update({
+        where: {
+          id: updatedInvitation.id,
+        },
+
+        data: {
+          emailStatus: InvitationEmailStatus.FAILED,
+
+          emailSentAt: null,
+
+          emailError: errorMessage,
+        },
+      });
+
+      return {
+        message: 'Invitation regenerated, but email delivery failed',
+
+        invitation: {
+          id: failedInvitation.id,
+          email: failedInvitation.email,
+          firstName: failedInvitation.firstName,
+          lastName: failedInvitation.lastName,
+          role: failedInvitation.role,
+          status: failedInvitation.status,
+          expiresAt: failedInvitation.expiresAt,
+
+          emailStatus: failedInvitation.emailStatus,
+
+          emailSentAt: failedInvitation.emailSentAt,
+
+          emailError: failedInvitation.emailError,
+        },
+
+        /*
+         * DEVELOPMENT ONLY.
+         */
+        invitationUrl,
+      };
+    }
   }
 }
