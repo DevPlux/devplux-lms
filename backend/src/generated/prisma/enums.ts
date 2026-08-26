@@ -47,3 +47,12 @@ export const InvitationStatus = {
 } as const
 
 export type InvitationStatus = (typeof InvitationStatus)[keyof typeof InvitationStatus]
+
+
+export const InvitationEmailStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+} as const
+
+export type InvitationEmailStatus = (typeof InvitationEmailStatus)[keyof typeof InvitationEmailStatus]
