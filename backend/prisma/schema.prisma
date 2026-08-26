@@ -196,9 +196,12 @@ model InstituteInvitation {
   acceptedAt DateTime?
   revokedAt  DateTime?
 
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  emailStatus InvitationEmailStatus @default(PENDING)
+  emailSentAt DateTime?
+  emailError  String?
 
-  invitedBy User @relation(fields: [invitedByUserId], references: [id], onDelete: Restrict)
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invitedBy User   @relation(fields: [invitedByUserId], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -208,5 +211,12 @@ model InstituteInvitation {
   @@index([invitedByUserId])
   @@index([email])
   @@index([status])
+  @@index([emailStatus])
   @@index([expiresAt])
+}
+
+enum InvitationEmailStatus {
+  PENDING
+  SENT
+  FAILED
 }
