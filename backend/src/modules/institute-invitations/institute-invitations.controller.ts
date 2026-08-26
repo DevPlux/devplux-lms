@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -12,6 +21,7 @@ import { InstituteRole } from '../../generated/prisma/enums';
 import { CreateInstituteInvitationDto } from './dto/create-institute-invitation.dto';
 import { InstituteInvitationsService } from './institute-invitations.service';
 import { AcceptInstituteInvitationDto } from './dto/accept-institute-invitation.dto';
+import { QueryInstituteInvitationsDto } from './dto/query-institute-invitations.dto';
 
 type CurrentTenantData = NonNullable<TenantRequest['tenant']>;
 
@@ -49,5 +59,44 @@ export class InstituteInvitationsController {
   @Post('accept')
   accept(@Body() dto: AcceptInstituteInvitationDto) {
     return this.instituteInvitationsService.accept(dto);
+  }
+
+  @Get()
+  @Protected(InstituteRole.INSTITUTE_ADMIN)
+  findAll(
+    @CurrentTenant() tenant: CurrentTenantData,
+    @Query() query: QueryInstituteInvitationsDto,
+  ) {
+    return this.instituteInvitationsService.findAll(tenant.id, query);
+  }
+
+  @Delete(':invitationId')
+  @Protected(InstituteRole.INSTITUTE_ADMIN)
+  revoke(
+    @CurrentTenant() tenant: CurrentTenantData,
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
+    @Param('invitationId') invitationId: string,
+  ) {
+    return this.instituteInvitationsService.revoke(tenant.id, invitationId, {
+      actorUserId: currentUser.sub,
+      ipAddress: request.ip ?? undefined,
+      userAgent: request.headers['user-agent'] ?? undefined,
+    });
+  }
+
+  @Post(':invitationId/resend')
+  @Protected(InstituteRole.INSTITUTE_ADMIN)
+  resend(
+    @CurrentTenant() tenant: CurrentTenantData,
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Req() request: TenantRequest,
+    @Param('invitationId') invitationId: string,
+  ) {
+    return this.instituteInvitationsService.resend(tenant.id, invitationId, {
+      actorUserId: currentUser.sub,
+      ipAddress: request.ip ?? undefined,
+      userAgent: request.headers['user-agent'] ?? undefined,
+    });
   }
 }
