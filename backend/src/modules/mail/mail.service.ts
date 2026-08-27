@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
 
 import { instituteInvitationTemplate } from './templates/institute-invitation.template';
+import { passwordResetTemplate } from './templates/password-reset.template';
 
 interface SendInstituteInvitationInput {
   to: string;
@@ -10,6 +11,13 @@ interface SendInstituteInvitationInput {
   instituteName: string;
   role: string;
   invitationUrl: string;
+  expiresAt: Date;
+}
+
+interface SendPasswordResetInput {
+  to: string;
+  firstName: string;
+  resetUrl: string;
   expiresAt: Date;
 }
 
@@ -46,6 +54,34 @@ export class MailService {
 
     if (error) {
       throw new InternalServerErrorException('Failed to send invitation email');
+    }
+
+    return data;
+  }
+
+  async sendPasswordReset(input: SendPasswordResetInput) {
+    const fromName =
+      this.configService.get<string>('MAIL_FROM_NAME') ?? 'DevPlux LMS';
+
+    const fromEmail = this.configService.getOrThrow<string>('MAIL_FROM_EMAIL');
+
+    const html = passwordResetTemplate({
+      firstName: input.firstName,
+      resetUrl: input.resetUrl,
+      expiresAt: input.expiresAt,
+    });
+
+    const { data, error } = await this.resend.emails.send({
+      from: `${fromName} <${fromEmail}>`,
+      to: input.to,
+      subject: 'Reset your DevPlux LMS password',
+      html,
+    });
+
+    if (error) {
+      throw new InternalServerErrorException(
+        'Failed to send password reset email',
+      );
     }
 
     return data;
