@@ -127,6 +127,10 @@ export class AppModule implements NestModule {
         path: 'institute-invitations/:invitationId/resend',
         method: RequestMethod.POST,
       },
+      {
+        path: 'auth/forgot-password',
+        method: RequestMethod.POST,
+      },
     );
   }
 }
