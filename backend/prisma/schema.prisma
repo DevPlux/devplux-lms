@@ -24,10 +24,11 @@ model Tenant {
   sessions    AuthSession[]
   profile     TenantProfile?
 
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
-  auditLogs   AuditLog[]
-  invitations InstituteInvitation[]
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  auditLogs           AuditLog[]
+  invitations         InstituteInvitation[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model TenantDomain {
@@ -73,10 +74,11 @@ model User {
   memberships Membership[]
   sessions    AuthSession[]
 
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
-  auditLogs       AuditLog[]
-  sentInvitations InstituteInvitation[]
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  auditLogs           AuditLog[]
+  sentInvitations     InstituteInvitation[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Membership {
@@ -216,6 +218,49 @@ model InstituteInvitation {
 }
 
 enum InvitationEmailStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum PasswordResetStatus {
+  PENDING
+  USED
+  EXPIRED
+  REVOKED
+}
+
+model PasswordResetToken {
+  id String @id @default(uuid())
+
+  userId   String
+  tenantId String
+
+  tokenHash String
+  status    PasswordResetStatus @default(PENDING)
+
+  expiresAt DateTime
+  usedAt    DateTime?
+  revokedAt DateTime?
+
+  emailStatus EmailDeliveryStatus @default(PENDING)
+  emailSentAt DateTime?
+  emailError  String?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([status])
+  @@index([emailStatus])
+  @@index([expiresAt])
+}
+
+enum EmailDeliveryStatus {
   PENDING
   SENT
   FAILED
