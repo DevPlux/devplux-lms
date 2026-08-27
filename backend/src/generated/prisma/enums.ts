@@ -56,3 +56,22 @@ export const InvitationEmailStatus = {
 } as const
 
 export type InvitationEmailStatus = (typeof InvitationEmailStatus)[keyof typeof InvitationEmailStatus]
+
+
+export const PasswordResetStatus = {
+  PENDING: 'PENDING',
+  USED: 'USED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type PasswordResetStatus = (typeof PasswordResetStatus)[keyof typeof PasswordResetStatus]
+
+
+export const EmailDeliveryStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+} as const
+
+export type EmailDeliveryStatus = (typeof EmailDeliveryStatus)[keyof typeof EmailDeliveryStatus]

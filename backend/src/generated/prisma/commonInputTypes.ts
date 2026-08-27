@@ -284,6 +284,40 @@ export type EnumInvitationEmailStatusWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumInvitationEmailStatusFilter<$PrismaModel>
 }
 
+export type EnumPasswordResetStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasswordResetStatus | Prisma.EnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasswordResetStatusFilter<$PrismaModel> | $Enums.PasswordResetStatus
+}
+
+export type EnumEmailDeliveryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+}
+
+export type EnumPasswordResetStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasswordResetStatus | Prisma.EnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasswordResetStatusWithAggregatesFilter<$PrismaModel> | $Enums.PasswordResetStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasswordResetStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasswordResetStatusFilter<$PrismaModel>
+}
+
+export type EnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -538,6 +572,40 @@ export type NestedEnumInvitationEmailStatusWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumInvitationEmailStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumInvitationEmailStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPasswordResetStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasswordResetStatus | Prisma.EnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasswordResetStatusFilter<$PrismaModel> | $Enums.PasswordResetStatus
+}
+
+export type NestedEnumEmailDeliveryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+}
+
+export type NestedEnumPasswordResetStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasswordResetStatus | Prisma.EnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PasswordResetStatus[] | Prisma.ListEnumPasswordResetStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPasswordResetStatusWithAggregatesFilter<$PrismaModel> | $Enums.PasswordResetStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasswordResetStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasswordResetStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
 }
 
 

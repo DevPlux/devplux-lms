@@ -79,3 +79,8 @@ export type AuditLog = Prisma.AuditLogModel
  * 
  */
 export type InstituteInvitation = Prisma.InstituteInvitationModel
+/**
+ * Model PasswordResetToken
+ * 
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel

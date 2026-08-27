@@ -196,6 +196,7 @@ export type TenantWhereInput = {
   profile?: Prisma.XOR<Prisma.TenantProfileNullableScalarRelationFilter, Prisma.TenantProfileWhereInput> | null
   auditLogs?: Prisma.AuditLogListRelationFilter
   invitations?: Prisma.InstituteInvitationListRelationFilter
+  passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
 }
 
 export type TenantOrderByWithRelationInput = {
@@ -211,6 +212,7 @@ export type TenantOrderByWithRelationInput = {
   profile?: Prisma.TenantProfileOrderByWithRelationInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   invitations?: Prisma.InstituteInvitationOrderByRelationAggregateInput
+  passwordResetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -229,6 +231,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   profile?: Prisma.XOR<Prisma.TenantProfileNullableScalarRelationFilter, Prisma.TenantProfileWhereInput> | null
   auditLogs?: Prisma.AuditLogListRelationFilter
   invitations?: Prisma.InstituteInvitationListRelationFilter
+  passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
 }, "id" | "slug">
 
 export type TenantOrderByWithAggregationInput = {
@@ -268,6 +271,7 @@ export type TenantCreateInput = {
   profile?: Prisma.TenantProfileCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
@@ -283,6 +287,7 @@ export type TenantUncheckedCreateInput = {
   profile?: Prisma.TenantProfileUncheckedCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationUncheckedCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
@@ -298,6 +303,7 @@ export type TenantUpdateInput = {
   profile?: Prisma.TenantProfileUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
@@ -313,6 +319,7 @@ export type TenantUncheckedUpdateInput = {
   profile?: Prisma.TenantProfileUncheckedUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUncheckedUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
@@ -470,6 +477,20 @@ export type TenantUpdateOneRequiredWithoutInvitationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutInvitationsInput, Prisma.TenantUpdateWithoutInvitationsInput>, Prisma.TenantUncheckedUpdateWithoutInvitationsInput>
 }
 
+export type TenantCreateNestedOneWithoutPasswordResetTokensInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutPasswordResetTokensInput, Prisma.TenantUncheckedCreateWithoutPasswordResetTokensInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutPasswordResetTokensInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutPasswordResetTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutPasswordResetTokensInput, Prisma.TenantUncheckedCreateWithoutPasswordResetTokensInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutPasswordResetTokensInput
+  upsert?: Prisma.TenantUpsertWithoutPasswordResetTokensInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutPasswordResetTokensInput, Prisma.TenantUpdateWithoutPasswordResetTokensInput>, Prisma.TenantUncheckedUpdateWithoutPasswordResetTokensInput>
+}
+
 export type TenantCreateWithoutDomainsInput = {
   id?: string
   name: string
@@ -482,6 +503,7 @@ export type TenantCreateWithoutDomainsInput = {
   profile?: Prisma.TenantProfileCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutDomainsInput = {
@@ -496,6 +518,7 @@ export type TenantUncheckedCreateWithoutDomainsInput = {
   profile?: Prisma.TenantProfileUncheckedCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationUncheckedCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutDomainsInput = {
@@ -526,6 +549,7 @@ export type TenantUpdateWithoutDomainsInput = {
   profile?: Prisma.TenantProfileUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutDomainsInput = {
@@ -540,6 +564,7 @@ export type TenantUncheckedUpdateWithoutDomainsInput = {
   profile?: Prisma.TenantProfileUncheckedUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUncheckedUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutMembershipsInput = {
@@ -554,6 +579,7 @@ export type TenantCreateWithoutMembershipsInput = {
   profile?: Prisma.TenantProfileCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutMembershipsInput = {
@@ -568,6 +594,7 @@ export type TenantUncheckedCreateWithoutMembershipsInput = {
   profile?: Prisma.TenantProfileUncheckedCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationUncheckedCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutMembershipsInput = {
@@ -598,6 +625,7 @@ export type TenantUpdateWithoutMembershipsInput = {
   profile?: Prisma.TenantProfileUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutMembershipsInput = {
@@ -612,6 +640,7 @@ export type TenantUncheckedUpdateWithoutMembershipsInput = {
   profile?: Prisma.TenantProfileUncheckedUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUncheckedUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutSessionsInput = {
@@ -626,6 +655,7 @@ export type TenantCreateWithoutSessionsInput = {
   profile?: Prisma.TenantProfileCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutSessionsInput = {
@@ -640,6 +670,7 @@ export type TenantUncheckedCreateWithoutSessionsInput = {
   profile?: Prisma.TenantProfileUncheckedCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationUncheckedCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutSessionsInput = {
@@ -670,6 +701,7 @@ export type TenantUpdateWithoutSessionsInput = {
   profile?: Prisma.TenantProfileUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutSessionsInput = {
@@ -684,6 +716,7 @@ export type TenantUncheckedUpdateWithoutSessionsInput = {
   profile?: Prisma.TenantProfileUncheckedUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUncheckedUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutProfileInput = {
@@ -698,6 +731,7 @@ export type TenantCreateWithoutProfileInput = {
   sessions?: Prisma.AuthSessionCreateNestedManyWithoutTenantInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutProfileInput = {
@@ -712,6 +746,7 @@ export type TenantUncheckedCreateWithoutProfileInput = {
   sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutTenantInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutTenantInput
   invitations?: Prisma.InstituteInvitationUncheckedCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutProfileInput = {
@@ -742,6 +777,7 @@ export type TenantUpdateWithoutProfileInput = {
   sessions?: Prisma.AuthSessionUpdateManyWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutProfileInput = {
@@ -756,6 +792,7 @@ export type TenantUncheckedUpdateWithoutProfileInput = {
   sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUncheckedUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutAuditLogsInput = {
@@ -770,6 +807,7 @@ export type TenantCreateWithoutAuditLogsInput = {
   sessions?: Prisma.AuthSessionCreateNestedManyWithoutTenantInput
   profile?: Prisma.TenantProfileCreateNestedOneWithoutTenantInput
   invitations?: Prisma.InstituteInvitationCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutAuditLogsInput = {
@@ -784,6 +822,7 @@ export type TenantUncheckedCreateWithoutAuditLogsInput = {
   sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutTenantInput
   profile?: Prisma.TenantProfileUncheckedCreateNestedOneWithoutTenantInput
   invitations?: Prisma.InstituteInvitationUncheckedCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutAuditLogsInput = {
@@ -814,6 +853,7 @@ export type TenantUpdateWithoutAuditLogsInput = {
   sessions?: Prisma.AuthSessionUpdateManyWithoutTenantNestedInput
   profile?: Prisma.TenantProfileUpdateOneWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutAuditLogsInput = {
@@ -828,6 +868,7 @@ export type TenantUncheckedUpdateWithoutAuditLogsInput = {
   sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutTenantNestedInput
   profile?: Prisma.TenantProfileUncheckedUpdateOneWithoutTenantNestedInput
   invitations?: Prisma.InstituteInvitationUncheckedUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutInvitationsInput = {
@@ -842,6 +883,7 @@ export type TenantCreateWithoutInvitationsInput = {
   sessions?: Prisma.AuthSessionCreateNestedManyWithoutTenantInput
   profile?: Prisma.TenantProfileCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutInvitationsInput = {
@@ -856,6 +898,7 @@ export type TenantUncheckedCreateWithoutInvitationsInput = {
   sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutTenantInput
   profile?: Prisma.TenantProfileUncheckedCreateNestedOneWithoutTenantInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutTenantInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutInvitationsInput = {
@@ -886,6 +929,7 @@ export type TenantUpdateWithoutInvitationsInput = {
   sessions?: Prisma.AuthSessionUpdateManyWithoutTenantNestedInput
   profile?: Prisma.TenantProfileUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutInvitationsInput = {
@@ -900,6 +944,83 @@ export type TenantUncheckedUpdateWithoutInvitationsInput = {
   sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutTenantNestedInput
   profile?: Prisma.TenantProfileUncheckedUpdateOneWithoutTenantNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutTenantNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutPasswordResetTokensInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.TenantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  domains?: Prisma.TenantDomainCreateNestedManyWithoutTenantInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutTenantInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutTenantInput
+  profile?: Prisma.TenantProfileCreateNestedOneWithoutTenantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutTenantInput
+  invitations?: Prisma.InstituteInvitationCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutPasswordResetTokensInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.TenantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  domains?: Prisma.TenantDomainUncheckedCreateNestedManyWithoutTenantInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutTenantInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutTenantInput
+  profile?: Prisma.TenantProfileUncheckedCreateNestedOneWithoutTenantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutTenantInput
+  invitations?: Prisma.InstituteInvitationUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutPasswordResetTokensInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutPasswordResetTokensInput, Prisma.TenantUncheckedCreateWithoutPasswordResetTokensInput>
+}
+
+export type TenantUpsertWithoutPasswordResetTokensInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutPasswordResetTokensInput, Prisma.TenantUncheckedUpdateWithoutPasswordResetTokensInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutPasswordResetTokensInput, Prisma.TenantUncheckedCreateWithoutPasswordResetTokensInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutPasswordResetTokensInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutPasswordResetTokensInput, Prisma.TenantUncheckedUpdateWithoutPasswordResetTokensInput>
+}
+
+export type TenantUpdateWithoutPasswordResetTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  domains?: Prisma.TenantDomainUpdateManyWithoutTenantNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutTenantNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutTenantNestedInput
+  profile?: Prisma.TenantProfileUpdateOneWithoutTenantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutTenantNestedInput
+  invitations?: Prisma.InstituteInvitationUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutPasswordResetTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  domains?: Prisma.TenantDomainUncheckedUpdateManyWithoutTenantNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutTenantNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutTenantNestedInput
+  profile?: Prisma.TenantProfileUncheckedUpdateOneWithoutTenantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutTenantNestedInput
+  invitations?: Prisma.InstituteInvitationUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 
@@ -913,6 +1034,7 @@ export type TenantCountOutputType = {
   sessions: number
   auditLogs: number
   invitations: number
+  passwordResetTokens: number
 }
 
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -921,6 +1043,7 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   sessions?: boolean | TenantCountOutputTypeCountSessionsArgs
   auditLogs?: boolean | TenantCountOutputTypeCountAuditLogsArgs
   invitations?: boolean | TenantCountOutputTypeCountInvitationsArgs
+  passwordResetTokens?: boolean | TenantCountOutputTypeCountPasswordResetTokensArgs
 }
 
 /**
@@ -968,6 +1091,13 @@ export type TenantCountOutputTypeCountInvitationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.InstituteInvitationWhereInput
 }
 
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountPasswordResetTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PasswordResetTokenWhereInput
+}
+
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -982,6 +1112,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   profile?: boolean | Prisma.Tenant$profileArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Tenant$auditLogsArgs<ExtArgs>
   invitations?: boolean | Prisma.Tenant$invitationsArgs<ExtArgs>
+  passwordResetTokens?: boolean | Prisma.Tenant$passwordResetTokensArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
@@ -1020,6 +1151,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   profile?: boolean | Prisma.Tenant$profileArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Tenant$auditLogsArgs<ExtArgs>
   invitations?: boolean | Prisma.Tenant$invitationsArgs<ExtArgs>
+  passwordResetTokens?: boolean | Prisma.Tenant$passwordResetTokensArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TenantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1034,6 +1166,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     profile: Prisma.$TenantProfilePayload<ExtArgs> | null
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     invitations: Prisma.$InstituteInvitationPayload<ExtArgs>[]
+    passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1442,6 +1575,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   profile<T extends Prisma.Tenant$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$profileArgs<ExtArgs>>): Prisma.Prisma__TenantProfileClient<runtime.Types.Result.GetResult<Prisma.$TenantProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   auditLogs<T extends Prisma.Tenant$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invitations<T extends Prisma.Tenant$invitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InstituteInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  passwordResetTokens<T extends Prisma.Tenant$passwordResetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2006,6 +2140,30 @@ export type Tenant$invitationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.InstituteInvitationScalarFieldEnum | Prisma.InstituteInvitationScalarFieldEnum[]
+}
+
+/**
+ * Tenant.passwordResetTokens
+ */
+export type Tenant$passwordResetTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PasswordResetToken
+   */
+  select?: Prisma.PasswordResetTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PasswordResetToken
+   */
+  omit?: Prisma.PasswordResetTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PasswordResetTokenInclude<ExtArgs> | null
+  where?: Prisma.PasswordResetTokenWhereInput
+  orderBy?: Prisma.PasswordResetTokenOrderByWithRelationInput | Prisma.PasswordResetTokenOrderByWithRelationInput[]
+  cursor?: Prisma.PasswordResetTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PasswordResetTokenScalarFieldEnum | Prisma.PasswordResetTokenScalarFieldEnum[]
 }
 
 /**

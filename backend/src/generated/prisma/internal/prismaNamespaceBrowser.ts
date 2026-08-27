@@ -58,7 +58,8 @@ export const ModelName = {
   AuthSession: 'AuthSession',
   TenantProfile: 'TenantProfile',
   AuditLog: 'AuditLog',
-  InstituteInvitation: 'InstituteInvitation'
+  InstituteInvitation: 'InstituteInvitation',
+  PasswordResetToken: 'PasswordResetToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -199,6 +200,25 @@ export const InstituteInvitationScalarFieldEnum = {
 } as const
 
 export type InstituteInvitationScalarFieldEnum = (typeof InstituteInvitationScalarFieldEnum)[keyof typeof InstituteInvitationScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tenantId: 'tenantId',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  revokedAt: 'revokedAt',
+  emailStatus: 'emailStatus',
+  emailSentAt: 'emailSentAt',
+  emailError: 'emailError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
 
 
 export const SortOrder = {
