@@ -85,22 +85,6 @@ export class InstituteInvitationsService {
       );
     }
 
-    /*
-     * Generate invitation token.
-     *
-     * Raw token is sent through email.
-     * Only the SHA-256 hash is stored.
-     */
-    const rawToken = randomBytes(32).toString('hex');
-
-    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
-
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 24);
-
-    /*
-     * Retrieve tenant before creating the invitation.
-     */
     const tenant = await this.prisma.tenant.findUnique({
       where: {
         id: tenantId,
@@ -114,23 +98,23 @@ export class InstituteInvitationsService {
       throw new NotFoundException('Institute not found');
     }
 
-    /*
-     * Create invitation.
-     *
-     * emailStatus starts as PENDING.
-     */
+    const rawToken = randomBytes(32).toString('hex');
+
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24);
+
     const invitation = await this.prisma.instituteInvitation.create({
       data: {
         tenantId,
         invitedByUserId,
 
         email,
-
         firstName: dto.firstName.trim(),
         lastName: dto.lastName.trim(),
 
         role: dto.role,
-
         status: InvitationStatus.PENDING,
 
         tokenHash,
@@ -140,19 +124,19 @@ export class InstituteInvitationsService {
       },
     });
 
-    /*
-     * Audit invitation creation.
-     */
     await this.auditLogsService.create({
       tenantId,
 
       actorUserId: auditContext.actorUserId,
+
       ipAddress: auditContext.ipAddress,
+
       userAgent: auditContext.userAgent,
 
       action: AuditAction.INSTITUTE_INVITATION_CREATED,
 
       targetType: 'InstituteInvitation',
+
       targetId: invitation.id,
 
       metadata: {
@@ -162,21 +146,11 @@ export class InstituteInvitationsService {
       },
     });
 
-    /*
-     * Build invitation URL.
-     */
     const frontendUrl =
       this.configService.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
 
     const invitationUrl = `${frontendUrl}/accept-invitation?token=${rawToken}`;
 
-    /*
-     * Attempt email delivery.
-     *
-     * IMPORTANT:
-     * We do not delete the invitation when email delivery fails.
-     * The admin can resend it later.
-     */
     try {
       await this.mailService.sendInstituteInvitation({
         to: invitation.email,
@@ -191,10 +165,41 @@ export class InstituteInvitationsService {
         where: {
           id: invitation.id,
         },
+
         data: {
           emailStatus: InvitationEmailStatus.SENT,
+
           emailSentAt: new Date(),
+
           emailError: null,
+        },
+      });
+
+      await this.auditLogsService.create({
+        tenantId,
+
+        actorUserId: auditContext.actorUserId,
+
+        ipAddress: auditContext.ipAddress,
+
+        userAgent: auditContext.userAgent,
+
+        action: AuditAction.INSTITUTE_INVITATION_EMAIL_SENT,
+
+        targetType: 'InstituteInvitation',
+
+        targetId: sentInvitation.id,
+
+        metadata: {
+          email: sentInvitation.email,
+
+          role: sentInvitation.role,
+
+          emailStatus: sentInvitation.emailStatus,
+
+          emailSentAt: sentInvitation.emailSentAt?.toISOString() ?? null,
+
+          source: 'CREATE',
         },
       });
 
@@ -203,22 +208,27 @@ export class InstituteInvitationsService {
 
         invitation: {
           id: sentInvitation.id,
+
           email: sentInvitation.email,
+
           firstName: sentInvitation.firstName,
+
           lastName: sentInvitation.lastName,
+
           role: sentInvitation.role,
+
           status: sentInvitation.status,
+
           expiresAt: sentInvitation.expiresAt,
 
           emailStatus: sentInvitation.emailStatus,
+
           emailSentAt: sentInvitation.emailSentAt,
+
           emailError: sentInvitation.emailError,
         },
 
-        /*
-         * DEVELOPMENT ONLY.
-         * Remove this from production API responses.
-         */
+        // DEVELOPMENT ONLY
         invitationUrl,
       };
     } catch (error) {
@@ -229,10 +239,41 @@ export class InstituteInvitationsService {
         where: {
           id: invitation.id,
         },
+
         data: {
           emailStatus: InvitationEmailStatus.FAILED,
+
           emailSentAt: null,
+
           emailError: errorMessage,
+        },
+      });
+
+      await this.auditLogsService.create({
+        tenantId,
+
+        actorUserId: auditContext.actorUserId,
+
+        ipAddress: auditContext.ipAddress,
+
+        userAgent: auditContext.userAgent,
+
+        action: AuditAction.INSTITUTE_INVITATION_EMAIL_FAILED,
+
+        targetType: 'InstituteInvitation',
+
+        targetId: failedInvitation.id,
+
+        metadata: {
+          email: failedInvitation.email,
+
+          role: failedInvitation.role,
+
+          emailStatus: failedInvitation.emailStatus,
+
+          error: errorMessage,
+
+          source: 'CREATE',
         },
       });
 
@@ -241,21 +282,27 @@ export class InstituteInvitationsService {
 
         invitation: {
           id: failedInvitation.id,
+
           email: failedInvitation.email,
+
           firstName: failedInvitation.firstName,
+
           lastName: failedInvitation.lastName,
+
           role: failedInvitation.role,
+
           status: failedInvitation.status,
+
           expiresAt: failedInvitation.expiresAt,
 
           emailStatus: failedInvitation.emailStatus,
+
           emailSentAt: failedInvitation.emailSentAt,
+
           emailError: failedInvitation.emailError,
         },
 
-        /*
-         * DEVELOPMENT ONLY.
-         */
+        // DEVELOPMENT ONLY
         invitationUrl,
       };
     }
@@ -290,6 +337,7 @@ export class InstituteInvitationsService {
         where: {
           id: invitation.id,
         },
+
         data: {
           status: InvitationStatus.EXPIRED,
         },
@@ -303,10 +351,15 @@ export class InstituteInvitationsService {
 
       invitation: {
         email: invitation.email,
+
         firstName: invitation.firstName,
+
         lastName: invitation.lastName,
+
         role: invitation.role,
+
         expiresAt: invitation.expiresAt,
+
         tenant: invitation.tenant,
       },
     };
@@ -331,6 +384,7 @@ export class InstituteInvitationsService {
         where: {
           id: invitation.id,
         },
+
         data: {
           status: InvitationStatus.EXPIRED,
         },
@@ -348,16 +402,13 @@ export class InstituteInvitationsService {
     let userId: string;
 
     if (existingUser) {
-      /*
-       * Existing global user:
-       * never replace their existing password.
-       */
       userId = existingUser.id;
 
       const existingMembership = await this.prisma.membership.findUnique({
         where: {
           userId_tenantId: {
             userId: existingUser.id,
+
             tenantId: invitation.tenantId,
           },
         },
@@ -367,18 +418,16 @@ export class InstituteInvitationsService {
         throw new ConflictException('User already belongs to this institute');
       }
     } else {
-      /*
-       * New user:
-       * create their account using the password
-       * selected during invitation acceptance.
-       */
       const passwordHash = await bcrypt.hash(dto.password, 12);
 
       const newUser = await this.prisma.user.create({
         data: {
           email: invitation.email,
+
           firstName: invitation.firstName,
+
           lastName: invitation.lastName,
+
           passwordHash,
         },
       });
@@ -390,8 +439,11 @@ export class InstituteInvitationsService {
       const membership = await tx.membership.create({
         data: {
           userId,
+
           tenantId: invitation.tenantId,
+
           role: invitation.role,
+
           status: MembershipStatus.ACTIVE,
         },
       });
@@ -400,8 +452,10 @@ export class InstituteInvitationsService {
         where: {
           id: invitation.id,
         },
+
         data: {
           status: InvitationStatus.ACCEPTED,
+
           acceptedAt: new Date(),
         },
       });
@@ -417,8 +471,11 @@ export class InstituteInvitationsService {
 
       membership: {
         id: result.membership.id,
+
         tenantId: result.membership.tenantId,
+
         role: result.membership.role,
+
         status: result.membership.status,
       },
     };
@@ -441,18 +498,21 @@ export class InstituteInvitationsService {
           {
             email: {
               contains: search,
+
               mode: 'insensitive' as const,
             },
           },
           {
             firstName: {
               contains: search,
+
               mode: 'insensitive' as const,
             },
           },
           {
             lastName: {
               contains: search,
+
               mode: 'insensitive' as const,
             },
           },
@@ -476,9 +536,6 @@ export class InstituteInvitationsService {
 
           status: true,
 
-          /*
-           * Email delivery information.
-           */
           emailStatus: true,
           emailSentAt: true,
           emailError: true,
@@ -517,6 +574,7 @@ export class InstituteInvitationsService {
         page,
         limit,
         total,
+
         totalPages: Math.ceil(total / limit),
       },
     };
@@ -530,6 +588,7 @@ export class InstituteInvitationsService {
     const invitation = await this.prisma.instituteInvitation.findFirst({
       where: {
         id: invitationId,
+
         tenantId,
       },
     });
@@ -549,6 +608,7 @@ export class InstituteInvitationsService {
 
       data: {
         status: InvitationStatus.REVOKED,
+
         revokedAt: new Date(),
       },
     });
@@ -565,10 +625,12 @@ export class InstituteInvitationsService {
       action: AuditAction.INSTITUTE_INVITATION_REVOKED,
 
       targetType: 'InstituteInvitation',
+
       targetId: invitation.id,
 
       metadata: {
         email: invitation.email,
+
         role: invitation.role,
       },
     });
@@ -578,8 +640,11 @@ export class InstituteInvitationsService {
 
       invitation: {
         id: revokedInvitation.id,
+
         email: revokedInvitation.email,
+
         status: revokedInvitation.status,
+
         revokedAt: revokedInvitation.revokedAt,
 
         emailStatus: revokedInvitation.emailStatus,
@@ -595,6 +660,7 @@ export class InstituteInvitationsService {
     const invitation = await this.prisma.instituteInvitation.findFirst({
       where: {
         id: invitationId,
+
         tenantId,
       },
     });
@@ -603,20 +669,24 @@ export class InstituteInvitationsService {
       throw new NotFoundException('Invitation not found');
     }
 
-    /*
-     * Once accepted, an invitation is finished.
-     * It must never be resent.
-     */
     if (invitation.status === InvitationStatus.ACCEPTED) {
       throw new ConflictException('Accepted invitations cannot be resent');
     }
 
-    /*
-     * Generate a completely new token.
-     *
-     * Replacing tokenHash automatically
-     * invalidates the previous invitation URL.
-     */
+    const tenant = await this.prisma.tenant.findUnique({
+      where: {
+        id: tenantId,
+      },
+
+      select: {
+        name: true,
+      },
+    });
+
+    if (!tenant) {
+      throw new NotFoundException('Institute not found');
+    }
+
     const rawToken = randomBytes(32).toString('hex');
 
     const tokenHash = createHash('sha256').update(rawToken).digest('hex');
@@ -625,10 +695,6 @@ export class InstituteInvitationsService {
 
     expiresAt.setHours(expiresAt.getHours() + 24);
 
-    /*
-     * Reset invitation lifecycle and
-     * email delivery lifecycle.
-     */
     const updatedInvitation = await this.prisma.instituteInvitation.update({
       where: {
         id: invitation.id,
@@ -638,21 +704,21 @@ export class InstituteInvitationsService {
         tokenHash,
 
         status: InvitationStatus.PENDING,
+
         expiresAt,
 
         acceptedAt: null,
+
         revokedAt: null,
 
         emailStatus: InvitationEmailStatus.PENDING,
 
         emailSentAt: null,
+
         emailError: null,
       },
     });
 
-    /*
-     * Record the resend action.
-     */
     await this.auditLogsService.create({
       tenantId,
 
@@ -665,51 +731,35 @@ export class InstituteInvitationsService {
       action: AuditAction.INSTITUTE_INVITATION_RESENT,
 
       targetType: 'InstituteInvitation',
-      targetId: invitation.id,
+
+      targetId: updatedInvitation.id,
 
       metadata: {
-        email: invitation.email,
-        role: invitation.role,
+        email: updatedInvitation.email,
+
+        role: updatedInvitation.role,
+
         expiresAt: expiresAt.toISOString(),
       },
     });
 
-    /*
-     * Build fresh URL containing
-     * the new raw token.
-     */
     const frontendUrl =
       this.configService.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
 
     const invitationUrl = `${frontendUrl}/accept-invitation?token=${rawToken}`;
 
-    /*
-     * Retrieve institute information
-     * for the email template.
-     */
-    const tenant = await this.prisma.tenant.findUnique({
-      where: {
-        id: tenantId,
-      },
-      select: {
-        name: true,
-      },
-    });
-
-    if (!tenant) {
-      throw new NotFoundException('Institute not found');
-    }
-
-    /*
-     * Attempt delivery of the new email.
-     */
     try {
       await this.mailService.sendInstituteInvitation({
         to: updatedInvitation.email,
+
         firstName: updatedInvitation.firstName,
+
         instituteName: tenant.name,
+
         role: updatedInvitation.role,
+
         invitationUrl,
+
         expiresAt: updatedInvitation.expiresAt,
       });
 
@@ -717,6 +767,7 @@ export class InstituteInvitationsService {
         where: {
           id: updatedInvitation.id,
         },
+
         data: {
           emailStatus: InvitationEmailStatus.SENT,
 
@@ -726,16 +777,50 @@ export class InstituteInvitationsService {
         },
       });
 
+      await this.auditLogsService.create({
+        tenantId,
+
+        actorUserId: auditContext.actorUserId,
+
+        ipAddress: auditContext.ipAddress,
+
+        userAgent: auditContext.userAgent,
+
+        action: AuditAction.INSTITUTE_INVITATION_EMAIL_SENT,
+
+        targetType: 'InstituteInvitation',
+
+        targetId: sentInvitation.id,
+
+        metadata: {
+          email: sentInvitation.email,
+
+          role: sentInvitation.role,
+
+          emailStatus: sentInvitation.emailStatus,
+
+          emailSentAt: sentInvitation.emailSentAt?.toISOString() ?? null,
+
+          source: 'RESEND',
+        },
+      });
+
       return {
         message: 'Invitation resent and email sent successfully',
 
         invitation: {
           id: sentInvitation.id,
+
           email: sentInvitation.email,
+
           firstName: sentInvitation.firstName,
+
           lastName: sentInvitation.lastName,
+
           role: sentInvitation.role,
+
           status: sentInvitation.status,
+
           expiresAt: sentInvitation.expiresAt,
 
           emailStatus: sentInvitation.emailStatus,
@@ -745,19 +830,13 @@ export class InstituteInvitationsService {
           emailError: sentInvitation.emailError,
         },
 
-        /*
-         * DEVELOPMENT ONLY.
-         */
+        // DEVELOPMENT ONLY
         invitationUrl,
       };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown email delivery error';
 
-      /*
-       * Keep the invitation alive.
-       * Only mark email delivery as FAILED.
-       */
       const failedInvitation = await this.prisma.instituteInvitation.update({
         where: {
           id: updatedInvitation.id,
@@ -772,16 +851,50 @@ export class InstituteInvitationsService {
         },
       });
 
+      await this.auditLogsService.create({
+        tenantId,
+
+        actorUserId: auditContext.actorUserId,
+
+        ipAddress: auditContext.ipAddress,
+
+        userAgent: auditContext.userAgent,
+
+        action: AuditAction.INSTITUTE_INVITATION_EMAIL_FAILED,
+
+        targetType: 'InstituteInvitation',
+
+        targetId: failedInvitation.id,
+
+        metadata: {
+          email: failedInvitation.email,
+
+          role: failedInvitation.role,
+
+          emailStatus: failedInvitation.emailStatus,
+
+          error: errorMessage,
+
+          source: 'RESEND',
+        },
+      });
+
       return {
         message: 'Invitation regenerated, but email delivery failed',
 
         invitation: {
           id: failedInvitation.id,
+
           email: failedInvitation.email,
+
           firstName: failedInvitation.firstName,
+
           lastName: failedInvitation.lastName,
+
           role: failedInvitation.role,
+
           status: failedInvitation.status,
+
           expiresAt: failedInvitation.expiresAt,
 
           emailStatus: failedInvitation.emailStatus,
@@ -791,9 +904,7 @@ export class InstituteInvitationsService {
           emailError: failedInvitation.emailError,
         },
 
-        /*
-         * DEVELOPMENT ONLY.
-         */
+        // DEVELOPMENT ONLY
         invitationUrl,
       };
     }
