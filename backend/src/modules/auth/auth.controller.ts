@@ -55,11 +55,16 @@ export class AuthController {
   }
 
   @Get('me')
-  @Protected(InstituteRole.INSTITUTE_ADMIN)
-  me(@CurrentUser() user: AccessTokenPayload) {
-    return {
-      user,
-    };
+  @Protected(
+    InstituteRole.INSTITUTE_ADMIN,
+    InstituteRole.ACADEMIC_MANAGER,
+    InstituteRole.TEACHER,
+    InstituteRole.STUDENT,
+    InstituteRole.PARENT,
+    InstituteRole.ACCOUNTANT,
+  )
+  me(@CurrentUser() currentUser: AccessTokenPayload) {
+    return this.authService.getMe(currentUser.sub, currentUser.tenantId);
   }
 
   @Post('refresh')
