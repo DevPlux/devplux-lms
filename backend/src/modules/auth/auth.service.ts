@@ -800,4 +800,65 @@ export class AuthService {
       message: 'Password reset successfully. Please sign in again.',
     };
   }
+
+  async getMe(userId: string, tenantId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        isActive: true,
+      },
+    });
+
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('User account is inactive');
+    }
+
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId,
+        },
+      },
+
+      include: {
+        tenant: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            status: true,
+          },
+        },
+      },
+    });
+
+    if (!membership || membership.status !== MembershipStatus.ACTIVE) {
+      throw new UnauthorizedException('Active institute membership not found');
+    }
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+
+      tenant: {
+        id: membership.tenant.id,
+        name: membership.tenant.name,
+        slug: membership.tenant.slug,
+      },
+
+      role: membership.role,
+    };
+  }
 }
