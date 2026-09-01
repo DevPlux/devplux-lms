@@ -9,50 +9,55 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-    const configService = app.get(ConfigService);
+  const configService = app.get(ConfigService);
 
-    app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api/v1');
 
-    app.use(helmet());
+  app.use(helmet());
 
-    app.use(cookieParser());
+  app.use(cookieParser());
 
-    app.enableCors({
-        origin: configService.get<string>('FRONTEND_URL'),
-        credentials: true,
-    });
+  app.enableCors({
+    origin: ['http://localhost:3000'],
 
-    app.useGlobalPipes(
-        new ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-            transform: true,
-        }),
-    );
+    credentials: true,
 
-    const swaggerConfig = new DocumentBuilder()
-        .setTitle('Devplux LMS API')
-        .setDescription('API documentation for the Devplux Learning Management System')
-        .setVersion('1.0')
-        .build();
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-Host'],
+  });
 
-    SwaggerModule.setup('docs', app, document);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
-    const port = configService.get<number>('PORT') ?? 4000;
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Devplux LMS API')
+    .setDescription(
+      'API documentation for the Devplux Learning Management System',
+    )
+    .setVersion('1.0')
+    .build();
 
-    await app.listen(port);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-    console.log(
-        `Devplux LMS API running on http://localhost:${port}/api/v1`,
-    );
+  SwaggerModule.setup('docs', app, document);
 
-    console.log(
-        `Swagger documentation available at http://localhost:${port}/docs`,
-    );
+  const port = configService.get<number>('PORT') ?? 4000;
+
+  await app.listen(port);
+
+  console.log(`Devplux LMS API running on http://localhost:${port}/api/v1`);
+
+  console.log(
+    `Swagger documentation available at http://localhost:${port}/docs`,
+  );
 }
 
 bootstrap();
