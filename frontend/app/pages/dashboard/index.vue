@@ -1,64 +1,50 @@
 <script lang="ts" setup>
 definePageMeta({
   middleware: "auth",
+  layout: "dashboard",
 });
 
-const { user, tenant, role, initialized, initializing, logout } = useAuth();
+const { user, tenant, role } = useAuth();
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-100">
-    <!-- AUTH RESTORATION LOADING -->
-    <div
-      v-if="!initialized || initializing"
-      class="flex min-h-screen items-center justify-center"
-    >
-      <div class="text-center">
-        <div
-          class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-blue-600"
-        />
+  <div>
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Dashboard</h1>
 
-        <p class="mt-4 text-sm text-slate-500">Loading your workspace...</p>
-      </div>
+      <p class="mt-2 text-slate-500">
+        Welcome back,
+        {{ user?.firstName }}.
+      </p>
     </div>
 
-    <!-- DASHBOARD -->
-    <div v-else class="p-8">
-      <div class="mx-auto max-w-5xl rounded-xl bg-white p-8 shadow">
-        <div class="flex items-center justify-between">
-          <h1 class="text-3xl font-bold text-slate-900">Dashboard</h1>
+    <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm text-slate-500">Institute</p>
 
-          <button
-            class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-            @click="logout"
-          >
-            Logout
-          </button>
-        </div>
+        <p class="mt-2 text-lg font-semibold text-slate-900">
+          {{ tenant?.name }}
+        </p>
+      </div>
 
-        <div class="mt-6 space-y-2 text-slate-700">
-          <p>
-            User:
-            <strong>
-              {{ user?.firstName }}
-              {{ user?.lastName }}
-            </strong>
-          </p>
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm text-slate-500">Your Role</p>
 
-          <p>
-            Institute:
-            <strong>
-              {{ tenant?.name }}
-            </strong>
-          </p>
+        <p class="mt-2 text-lg font-semibold text-slate-900">
+          {{ role }}
+        </p>
+      </div>
 
-          <p>
-            Role:
-            <strong>
-              {{ role }}
-            </strong>
-          </p>
-        </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm text-slate-500">Users</p>
+
+        <p class="mt-2 text-2xl font-bold text-slate-900">—</p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm text-slate-500">Pending Invitations</p>
+
+        <p class="mt-2 text-2xl font-bold text-slate-900">—</p>
       </div>
     </div>
   </div>
